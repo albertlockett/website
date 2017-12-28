@@ -1,0 +1,3 @@
+node_modules/
+lib/
+*gulp-tsc-tmp*
