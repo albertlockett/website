@@ -22,7 +22,9 @@ export class HomePage extends React.Component {
             <Menu inverted pointing secondary size='large'>
               <Menu.Item as='a' active>Home</Menu.Item>
               <Menu.Item as='a'>Blog</Menu.Item>
-              <Menu.Item as='a'>Webmail</Menu.Item>
+              <Menu.Item as='a'>
+                <a href="http://lockettmail.ca">Webmail</a>
+              </Menu.Item>
             </Menu>
           </Container>
           <Container text>
@@ -59,11 +61,15 @@ export class HomePage extends React.Component {
                     <List.Item as='a'>Contact</List.Item>
                   </List>
                 </Grid.Column>
-                <Grid.Column width={3}>
+                <Grid.Column width={5}>
                   <Header inverted as='h4' content='Friends' />
                   <List link inverted>
-                    <List.Item as='a'>lockett.ca</List.Item>
-                    <List.Item as='a'>terrylockett.ca</List.Item>
+                    <List.Item as='a'>
+                      <a href="http://lockett.ca">Lockett Family Home Page</a>
+                    </List.Item>
+                    <List.Item as='a'>
+                      <a href="http://terrylockett.ca">Terry's site</a>
+                    </List.Item>
                   </List>
                 </Grid.Column>
               </Grid.Row>

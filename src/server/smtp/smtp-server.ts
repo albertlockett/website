@@ -1,5 +1,5 @@
 import { SMTPServer } from 'smtp-server';
-import { Mail } from './database';
+import { Mail } from '../../database';
 
 const MSPORT = 9003;
 const MSHOST = undefined;

@@ -27,6 +27,10 @@ gulp.task('compile:webpack', () => {
   gulp.src('lib/index.js')
     .pipe(webpack(require('./webpack.config.js').default))
     .pipe(gulp.dest(DOCBASE));
+
+  gulp.src('lib/webmail.js')
+    .pipe(webpack(require('./webpack.config.js').webmail))
+    .pipe(gulp.dest(DOCBASE));
 });
 
 

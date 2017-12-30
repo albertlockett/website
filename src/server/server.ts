@@ -1,6 +1,7 @@
 import 'colors';
 import * as express from 'express';
 import { start as startSMTPServer } from './smtp/smtp-server';
+import webmailApp from './webmail/mail-server';
 
 startSMTPServer();
 
@@ -14,4 +15,7 @@ app.listen(9002, () => {
   console.log('app server listening on port 9002');
 });
 
+webmailApp.listen(9001, () => {
+  console.log('webmail app listening on port 9001');
+});
 
