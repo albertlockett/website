@@ -1,6 +1,6 @@
 import 'colors';
 import * as express from 'express';
-import { start as startSMTPServer } from './smtp-server';
+import { start as startSMTPServer } from './smtp/smtp-server';
 
 startSMTPServer();
 

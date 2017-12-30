@@ -38,7 +38,7 @@ gulp.task('compile', [ 'compile:html', 'compile:tsc', 'compile:webpack' ]);
  ******************************************************************************/
 
 gulp.task('run:server', () => {
-  const SERVER_PATH = './lib/server.js';
+  const SERVER_PATH = './lib/server/server.js';
   let server = gls.new(SERVER_PATH);
   server.start();
 
