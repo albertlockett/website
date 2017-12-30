@@ -55,7 +55,7 @@ gulp.task('run', ['run:server']);
 gulp.task('watch', function() {
   gulp.watch(['src/**/*.ts', 'src/**/*.tsx'], [ 'compile:tsc' ]);
   gulp.watch('src/pages/*.html', [ 'compile:html' ]);
-  gulp.watch('lib/index.js', [ 'compile:webpack' ])
+  gulp.watch(['lib/index.js', 'src/sass/*.scss'], [ 'compile:webpack' ])
 });
 
 gulp.task('default', ['compile', 'run', 'watch']);

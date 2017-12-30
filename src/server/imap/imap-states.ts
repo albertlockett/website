@@ -1,0 +1,6 @@
+export enum IMAPStates {
+  NOT_AUTHENTICATED,
+  AUTHENTICATED,
+  SELECTED,
+  LOGOUT
+}

@@ -1,4 +1,9 @@
+import '../src/sass/main.scss';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { HomePage } from './components/HomePage';
 
-ReactDOM.render(<h1>ALBERT</h1>, document.getElementById('app'));
+ReactDOM.render(
+  <HomePage />,
+  document.getElementById('app')
+);

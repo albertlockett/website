@@ -1,8 +1,8 @@
 import 'colors';
 import * as express from 'express';
-import { start as startMailServer } from './mail-server';
+import { start as startSMTPServer } from './smtp-server';
 
-startMailServer();
+startSMTPServer();
 
 const app = express();
 
