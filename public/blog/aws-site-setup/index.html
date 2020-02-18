@@ -1,0 +1,145 @@
+<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 2.19.7"/><title data-react-helmet="true"></title><link rel="icon" href="/icons/icon-48x48.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#663399"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link as="script" rel="preload" href="/webpack-runtime-a1db10ce3c94241c4451.js"/><link as="script" rel="preload" href="/commons-cc051047d162e7351cdf.js"/><link as="script" rel="preload" href="/app-660331b71bcc66af304a.js"/><link as="script" rel="preload" href="/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js"/><link as="fetch" rel="preload" href="/page-data/blog/aws-site-setup/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><div style="padding:32px" class="blog-post-container"><div class="blog-post"><h1>AWS Site Setup</h1><h2>February 19, 2020</h2><div class="blog-post-content"><p>The information in this article will help you to set up a website on AWS</p>
+<p>TODO: Prerequisites and example projects</p>
+<ul>
+<li>AWS Account</li>
+<li>AWS credentials and cli installed</li>
+<li>Static content for website</li>
+<li>API Server (optional)</li>
+</ul>
+<h2>1. Register your Domain</h2>
+<p>First you'll need a domain to use for your website. You can get these from the Route53 service.</p>
+<h2>2. Create an S3 Bucket for your site</h2>
+<p>In the <a href="https://console.aws.amazon.com/console/home">AWS Console</a> click on <em>Services</em> and then search for S3. Clicking
+S3 should take you to the <a href="https://s3.console.aws.amazon.com/s3/home">S3 home page</a>.</p>
+<p>Now create a new bucket to hold the static content for your site</p>
+<ul>
+<li>Click the <em>Create bucket</em> button</li>
+<li>In the <em>Bucket name</em> input, give it the domain-name of your website (i.e "albertlockett.ca"), click Next</li>
+<li>Leave all defaults on Page 2, click next</li>
+<li>On Page 3 (<em>Set Permissions</em> page), uncheck <em>Block all public access</em>, and then <em>I acknowlegdge...</em> in the dialog that
+is then displayed. click Next</li>
+<li>On Page 4 click <em>Create bucket</em></li>
+</ul>
+<p>Your bucket will now display on the S3 buckets page. We now need to congure it for static web hosting. </p>
+<ul>
+<li>Click on the name of the bucket, and then click on the Properties tab on the bucket details page. </li>
+<li>Click on <em>Static website hosting</em>.</li>
+<li>In the Static website hosting form, type "index.html" in the <em>Index document</em> field and click <em>Save</em></li>
+</ul>
+<p>Now we need to add a Bucket Policy to allow your users to request access to your wbesite's files:</p>
+<ul>
+<li>Click on the Permissions tab</li>
+<li>Click on Bucket Policy</li>
+<li>
+<p>Enter the following Bucket Policy (make sure to change "albertlockett.ca" for your bucket's name)</p>
+<pre><code>{
+"Version": "2012-10-17",
+"Statement": [
+    {
+        "Sid": "PublicReadGetObject",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::albertlockett.ca/*"
+    }
+]
+}
+</code></pre>
+</li>
+</ul>
+<p>Next we need to upload the content for your static site into the S3 bucket.</p>
+<ul>
+<li>On the <em>Overview</em> tab click the <em>Upload</em> button</li>
+<li>Click <em>Add Files</em> and choose all the files for your website, click Next</li>
+<li>On the <em>Set Permissions</em> page, in the section called <em>Manage Public Permissions</em> choose <em>Grant Public Read Access
+to this Object(s)</em></li>
+<li>Click Next on Page 3 to accept defaults</li>
+<li>Click Upload</li>
+</ul>
+<p>TODO put hint here about using the CLI</p>
+<p>Now you'll see your objects in the bucket.</p>
+<p>Now we can test our bucket is configured correctly. In your web browser, navigate to your bucket's URL like this
+(change albertlockett.ca for your bucket name). You can also get the bucket name Properties -> Static Web Hosting and
+the link is beside a label called Endpoint.</p>
+<p><a href="http://albertlockett.ca.s3-website-us-east-1.amazonaws.com/">http://albertlockett.ca.s3-website-us-east-1.amazonaws.com/</a></p>
+<p>You have the option now to create a DNS alias record for your domain to
+albertlockett.ca.s3-website-us-east-1.amazonaws.com, but this has two disadvantages:</p>
+<ul>
+<li>You wont be able to serve your content over HTTPS</li>
+<li>You might have trouble using a client-side routing library like react-router. Say your users navigate to "/route" in
+your app, if they refresh the page they'll get the S3 403 response.</li>
+</ul>
+<p>The following sections of these instructions show how to set up CloudFront to solve against these problems</p>
+<h2>3 Create a CloudFront Distrbution</h2>
+<p>CloudFront is a service that allows you to have your static content distributed and cached on AWS's CDN. While that's
+nice for performance, using CloudFront also allows us to serve the content over HTTPS and it allows us to use custom
+error pages. We can use this custom error page functionality to return /index.html for any GET requests for content that
+isn't in our bucket. This is especially useful for sites using a client-side routing framework like react-router.</p>
+<p>In the <a href="https://console.aws.amazon.com/console/home">AWS Console</a> click on <em>Services</em> and then search for CloudFront.
+Clicking CloudFront should take you to the <a href="https://console.aws.amazon.com/cloudfront/home">CloudFront home page</a>. On
+this page, click <em>Create Distribution</em>.</p>
+<ul>
+<li>Chose <em>Get Started</em> under the <em>Web</em> section. You'll be taken to the <em>Create Distribution</em> form</li>
+<li>In the <em>Origin Settings</em> section, in the <em>Origin Domain Name</em> field, choose your new bucket (for example:
+albertlockett.ca.s3.amazonaws.com)</li>
+<li>In the <em>Distribution Settings</em> section, choose <em>Use Only U.S., Canada and Europe</em> in the Price Class setting (this is
+the cheapest option).</li>
+<li>Click <em>Create Distribution</em></li>
+</ul>
+<p>AWS will begin provisioning your CloudFront distribution. You'll see your distribution with Status of <em>In Progress</em>. It
+can take quite a while for the service to provision.</p>
+<p>You can also see CloudFront creates a domain name for your distribution (i.e., d3f0oyjgi4e6fq.cloudfront.net). Once your
+distribution status changes to <em>Deployed</em>, you should be able to paste this in your browser and be taken to your site.</p>
+<p><em>Note</em> you'll have to request an actual resource like /index.html, otherwise you'll get a 403 message. e.g.
+<a href="http://d3f0oyjgi4e6fq.cloudfront.net/index.html">http://d3f0oyjgi4e6fq.cloudfront.net/index.html</a></p>
+<p>This is not ideal, but we can get the right content by setting up a custom error response. </p>
+<ul>
+<li>Click on the ID link of your distribution</li>
+<li>Click on the Error Pages tab</li>
+<li>Click Create Custom Error Response</li>
+<li>Choose <em>HTTP Error Code</em> - <em>403: Forbidden</em></li>
+<li>Choose <em>Customie Error Response</em> - <em>Yes</em></li>
+<li>In Response Page Path type <em>/index.html</em></li>
+<li>Choose <em>HTTP Response Code</em> - <em>200: OK</em></li>
+<li>Click <em>Create</em></li>
+</ul>
+<p>Your distribution may enter the <em>In Progress</em> status again after setting up the custom error response. After some time,
+you should be able to go to "/" at your CloudFront domain and get the right content (i.e.
+<a href="http://d3f0oyjgi4e6fq.cloudfront.net/">http://d3f0oyjgi4e6fq.cloudfront.net/</a>)</p>
+<h1>4 Use your custom domain for CloudFront</h1>
+<p>You can now create an Alias record on your custom Domain, but CloudFront won't serve the content unless you configure
+CloudFront with an SSL Certificate, so we'll set one of those up first. There are probably many options to get yourself
+a cert but I'm going to use AWS's Certificate Manager (ACM) service.</p>
+<p>Note that to request a cert through ACM, you either need access to create DNS records for that domain, or you need
+access to the WHOIS contact info for the domain (or one of the admin email addresses).</p>
+<p>In the <a href="https://console.aws.amazon.com/console/home">AWS Console</a> click on <em>Services</em> and then search for Certificate
+Manager. Clicking CloudFront should take you to the <a href="https://console.aws.amazon.com/acm/hom">ACM home page</a>. On
+this page, click <em>Request a certificate</em>.</p>
+<ul>
+<li>Choose Request a public certificate</li>
+<li>In the <em>Add domain names</em> form, type your domain name and click Next</li>
+<li>Here there are two options for validating that you are the owner of the cert. I'm going to use DNS Validation but if
+you want to use email validation you can do that
+<a href="https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-email.html">here</a>. Choose <em>DNS Validation</em></li>
+<li>Add tags if you like, or click <em>Review</em></li>
+<li>Click <em>Confirm and Request</em></li>
+</ul>
+<p>You'll now have to go through a validation process with AWS to have the cert issued. If you're using DNS validation,
+you'll see that it wants you to create a CNAME entry with your DNS provider in order to validate the cert. If you're
+using Route 53, just click <em>Create Record in Route 53</em> and it will create the validation record automatically.</p>
+<p>Also note it may take up to 30 minutes for the changes to propagate, and for AWS to validate the domain.</p>
+<p>After Validation you can click <em>Continue</em>.</p>
+<p>Now it's time to configure the CloudFront distribution with your custom domain name and SSL cert. </p>
+<ul>
+<li>Go to CloudFront and clikc on the ID link for your distribution</li>
+<li>Click Edit</li>
+<li>In the box that says <em>Alternate Domain Names (CNAMEs)</em> type your custom domain name (e.g. albertlockett.ca)</li>
+<li>In the <em>SSL Certificate</em> field, choose <em>Custom SSL Certificate (example.com):</em></li>
+<li>In the textbox, choose your cert</li>
+<li>click <em>Yes, Edit</em> at the bottom of the form</li>
+</ul>
+<p>Your CloudFront distribution will enter the <em>In Progress</em> state again. After it's done you should be able to access
+your site at your own domain name:</p>
+<p><a href="http://albertlockett.ca">http://albertlockett.ca</a></p>
+<p>or using HTTPS</p>
+<p><a href="https://albertlockett.ca">https://albertlockett.ca</a></p></div></div></div></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/blog/aws-site-setup";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-660331b71bcc66af304a.js"],"component---src-templates-blog-template-js":["/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js"],"component---src-pages-404-js":["/component---src-pages-404-js-0290f163286959b63491.js"],"component---src-pages-index-js":["/component---src-pages-index-js-4e42b846db4997ff14a6.js"],"component---src-pages-page-2-js":["/component---src-pages-page-2-js-c533758acaabdefda86a.js"]};/*]]>*/</script><script src="/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js" async=""></script><script src="/app-660331b71bcc66af304a.js" async=""></script><script src="/commons-cc051047d162e7351cdf.js" async=""></script><script src="/webpack-runtime-a1db10ce3c94241c4451.js" async=""></script></body></html>
