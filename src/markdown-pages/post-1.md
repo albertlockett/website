@@ -4,6 +4,17 @@ date: "2020-02-19"
 title: "AWS Site Setup"
 ---
 
+
+![create_bucket_button](./pic_1.png)
+![create_bucket_button](../pic_1.png)
+![create_bucket_button](../../pic_1.png)
+![create_bucket_button](/images/pic_1.png)
+![create_bucket_button](/markdown-pages/pic_1.png)
+![create_bucket_button](../markdown-pages/pic_1.png)
+![create_bucket_button](src/markdown-pages/pic_1.png)
+![create_bucket_button](/blog/aws-site-setup/part_2/pic_1.png)
+![create_bucket_button](../images/gatsby-astronaut.png)
+
 The information in this article will help you to set up a website on AWS
 
 TODO: Prerequisites and example projects
@@ -23,6 +34,8 @@ S3 should take you to the [S3 home page](https://s3.console.aws.amazon.com/s3/ho
 
 Now create a new bucket to hold the static content for your site
 - Click the _Create bucket_ button
+  
+
 - In the _Bucket name_ input, give it the domain-name of your website (i.e "albertlockett.ca"), click Next
 - Leave all defaults on Page 2, click next
 - On Page 3 (_Set Permissions_ page), uncheck _Block all public access_, and then _I acknowlegdge..._ in the dialog that
