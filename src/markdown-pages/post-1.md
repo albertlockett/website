@@ -25,14 +25,14 @@ TODO: Prerequisites and example projects
 
 ## 1. Register your Domain
 
-First you'll need a domain to use for your website. You can get these from the Route53 service.
+First a domain will be needed to use for the website. Route53 can be used to register it.
 
 ## 2. Create an S3 Bucket for your site
 
 In the [AWS Console](https://console.aws.amazon.com/console/home) click on _Services_ and then search for S3. Clicking
 S3 should take you to the [S3 home page](https://s3.console.aws.amazon.com/s3/home).
 
-Now create a new bucket to hold the static content for your site
+Now create a new bucket to hold the static content for the site
 - Click the _Create bucket_ button
   ![create_bucket_button](./aws-site-setup/part_2/pic_1.png)
 
@@ -45,15 +45,16 @@ Now create a new bucket to hold the static content for your site
 - On Page 4 click _Create bucket_
 
 
-Your bucket will now display on the S3 buckets page. We now need to congure it for static web hosting. 
+Your bucket will now display on the S3 buckets page. The next step is to configure it for static web hosting. 
 - Click on the name of the bucket, and then click on the Properties tab on the bucket details page. 
 - Click on _Static website hosting_.
 - In the Static website hosting form, type "index.html" in the _Index document_ field and click _Save_
 
-Now we need to add a Bucket Policy to allow your users to request access to your wbesite's files:
+Now add a Bucket Policy to allow your users to request access to your wbesite's files:
 - Click on the Permissions tab
 - Click on Bucket Policy
-- Enter the following Bucket Policy (make sure to change "albertlockett.ca" for your bucket's name)
+- Enter the following Bucket Policy (make sure to change "albertlockett.ca" to the domain from Step 1 for the bucket's 
+  name)
 ```
 {
     "Version": "2012-10-17",
@@ -69,7 +70,7 @@ Now we need to add a Bucket Policy to allow your users to request access to your
 }
 ```
 
-Next we need to upload the content for your static site into the S3 bucket.
+Next we need to upload the content for the static site into the S3 bucket.
 - On the _Overview_ tab click the _Upload_ button
 - Click _Add Files_ and choose all the files for your website, click Next
 - On the _Set Permissions_ page, in the section called _Manage Public Permissions_ choose _Grant Public Read Access 
