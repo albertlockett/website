@@ -1,4 +1,12 @@
-<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 2.19.7"/><title data-react-helmet="true"></title><link rel="icon" href="/icons/icon-48x48.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#663399"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=edf3d310d67f8284a562bc3a58c3e761"/><link as="script" rel="preload" href="/webpack-runtime-a1db10ce3c94241c4451.js"/><link as="script" rel="preload" href="/commons-cc051047d162e7351cdf.js"/><link as="script" rel="preload" href="/app-660331b71bcc66af304a.js"/><link as="script" rel="preload" href="/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js"/><link as="fetch" rel="preload" href="/page-data/blog/aws-site-setup/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><div style="padding:32px" class="blog-post-container"><div class="blog-post"><h1>AWS Site Setup</h1><h2>February 19, 2020</h2><div class="blog-post-content"><p>The information in this article will help you to set up a website on AWS</p>
+<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 2.19.7"/><link as="script" rel="preload" href="/webpack-runtime-a1d09272d7fa82057848.js"/><link as="script" rel="preload" href="/commons-0ef4a132d6134d661f8d.js"/><link as="script" rel="preload" href="/app-7125ef222e6b22ce8e89.js"/><link as="script" rel="preload" href="/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js"/><link as="fetch" rel="preload" href="/page-data/blog/aws-site-setup/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><div style="padding:32px" class="blog-post-container"><div class="blog-post"><h1>AWS Site Setup</h1><h2>February 19, 2020</h2><div class="blog-post-content"><!-- ![create_bucket_button](../pic_1.png) -->
+<!-- ![create_bucket_button](../../pic_1.png) -->
+<!-- ![create_bucket_button](/images/pic_1.png) -->
+<!-- ![create_bucket_button](/markdown-pages/pic_1.png) -->
+<!-- ![create_bucket_button](../markdown-pages/pic_1.png)
+![create_bucket_button](src/markdown-pages/pic_1.png)
+![create_bucket_button](/blog/aws-site-setup/part_2/pic_1.png)
+![create_bucket_button](../images/gatsby-astronaut.png) -->
+<p>The information in this article will help you to set up a website on AWS</p>
 <p>TODO: Prerequisites and example projects</p>
 <ul>
 <li>AWS Account</li>
@@ -7,31 +15,122 @@
 <li>API Server (optional)</li>
 </ul>
 <h2>1. Register your Domain</h2>
-<p>First you'll need a domain to use for your website. You can get these from the Route53 service.</p>
+<p>First a domain will be needed to use for the website. Route53 can be used to register it.</p>
 <h2>2. Create an S3 Bucket for your site</h2>
 <p>In the <a href="https://console.aws.amazon.com/console/home">AWS Console</a> click on <em>Services</em> and then search for S3. Clicking
 S3 should take you to the <a href="https://s3.console.aws.amazon.com/s3/home">S3 home page</a>.</p>
-<p>Now create a new bucket to hold the static content for your site</p>
+<p>Now create a new bucket to hold the static content for the site</p>
 <ul>
-<li>Click the <em>Create bucket</em> button</li>
-<li>In the <em>Bucket name</em> input, give it the domain-name of your website (i.e "albertlockett.ca"), click Next</li>
+<li>Click the <em>Create bucket</em> button
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 800px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/1e6851a02635804d411b9ccf974e2b4e/1132d/pic_1.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 18.22107081174439%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAECAYAAACOXx+WAAAACXBIWXMAAAsSAAALEgHS3X78AAAAqElEQVQY05WOSw7CMAxEc3sW3IIF10DiGCxYVFUFTdOkbf5uOiQRXYDYYOnJtjQeD5NyRAgepbZt+4u9bExQjiAzrB9GcCExLwuI6Ccxxgq9+840TVBKwYcAWlfErGWH0wXH8xW35omVIqxz8N7n1KFSxCmlmiilz3TGGKhsWvRa66pn7YPj3rQQUsFkM20tzBflST8IcDXD5eNCz3k1s3kWUqLturq/ABNpNY+A4+5yAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="create_bucket_button"
+        title="create_bucket_button"
+        src="/static/1e6851a02635804d411b9ccf974e2b4e/5a190/pic_1.png"
+        srcset="/static/1e6851a02635804d411b9ccf974e2b4e/772e8/pic_1.png 200w,
+/static/1e6851a02635804d411b9ccf974e2b4e/e17e5/pic_1.png 400w,
+/static/1e6851a02635804d411b9ccf974e2b4e/5a190/pic_1.png 800w,
+/static/1e6851a02635804d411b9ccf974e2b4e/1132d/pic_1.png 1158w"
+        sizes="(max-width: 800px) 100vw, 800px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></li>
+<li>In the <em>Bucket name</em> input, give it the domain-name of your website (i.e "albertlockett.ca"), click Next
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 800px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/ebe94395cb01006763574b0b17b85da8/cf4cc/pic_2.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 64.87488415199259%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAACXBIWXMAAAsSAAALEgHS3X78AAAB+UlEQVQ4y5WSXVNSURSG968LCA5HEMYRzYAj8aEWIHBQEkJAyEYhByRywgYjEIma0KY/0IUzNWnM8BWQ1g952/vAhdVFcPGcd+13vWvN+SL601/QUbjKANxxH+oRrFaWe+ArfRjfX8FUv8ZM7YfkqUb9m1nmaU4GIMazAYSzPhZqXWhKLaiLLfCvW5ipdHDnTRezJx1Ml9sS+uM2DPQ8X+1CW2qDo9kpOmOodqCjPXWxCTLlDGPWt4U5MQ5uOQiZdR1yWwAKewBKx0Pcpiqj51sU5isdQ1hfPvJYRsovBUHUFjdckV2sbCZhFqMQxAjVEb4hzBP+8sx/5DYh+KOYtvtANA4/Ukdv8fTVO2TKdeyXTycmU6ojV/0I83oCRGsXkcgeYmMni1Aqh2g6j0j6haTjwvLx7EsseB7Rd2jzIpR8hsjeAWKZPJ48P8J2riAFxmVr/xDbdO6uJwzCWz1wx1LwJvbgiialmum9QByLazFYxoDlWF63tAaip5dPny/wpdHE+UUD51+/4bLZRaPTQ6PdG+p/uGx18f3qJ8THaRDOsop/cUO1OD43Z4lScEFhegCl4AarJ4YuVJic0g6V4KSPvBLA/GoYWvoPsS8+EQ4RGpsPBlcIc54I+OUNEP/uAXYKNenWeat3ItgyufE+otkCEsUPkAXz+A2x85QAK1Q2zAAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="create_bucket_button"
+        title="create_bucket_button"
+        src="/static/ebe94395cb01006763574b0b17b85da8/5a190/pic_2.png"
+        srcset="/static/ebe94395cb01006763574b0b17b85da8/772e8/pic_2.png 200w,
+/static/ebe94395cb01006763574b0b17b85da8/e17e5/pic_2.png 400w,
+/static/ebe94395cb01006763574b0b17b85da8/5a190/pic_2.png 800w,
+/static/ebe94395cb01006763574b0b17b85da8/cf4cc/pic_2.png 1079w"
+        sizes="(max-width: 800px) 100vw, 800px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></li>
 <li>Leave all defaults on Page 2, click next</li>
 <li>On Page 3 (<em>Set Permissions</em> page), uncheck <em>Block all public access</em>, and then <em>I acknowlegdge...</em> in the dialog that
-is then displayed. click Next</li>
+is then displayed. click Next
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 800px;"
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/6288c653c95d001f09a7975e9276b7d9/33c9c/pic_3.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 65.40158870255958%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAACXBIWXMAAAsSAAALEgHS3X78AAACpUlEQVQ4y42S2U9TURDG7z/H0gJhKViBUkppCy3WUkoXKJSlIEtkEeXBB30wGg0gUKJUhIREQZaIRRIXEukSoG2EliVSfDB8ztwuIT758MucM8t3ZuZeofy+B5LxReTdewPJiBdSInfYi5zheZH8US9KHyxARnAse2hejKdz2XKedJTq3c8g2JdDKF/8CdlMELkv/Mh6voeCyQDksyEUvwyicCqAErKy6SBKibKZEIqmgsimXKZgwo/CiT1IJkNQTO1CMIw8waPFdSz5vmFudQuetW28Wt/GwuYOXm98xhzdp1d9mCHmye/dSMZn2beyhbnNL3i748fQ7HvIux5CqGp0wuf7hKvECSL+r4gd7CERC+PXcRgXsQgu41FcnkRF3wVzfJjx/45HkDiLA1d/sLzyATKdGUKNrRtLax9xfHqG7/4QfoT2EQpHETgII3AYQZDg83Xr3z9E+CiGo9NzRGNxnF8k4Fl6hxK9DYLK5oah4y5s/WOwEg0dg9C09EDb0gtd6x1oW5NW50xS5+xDfVsfVNYuKJpcqLJ0QNnciRvGVlSYnBCqKXDT1AaDa0As1JBQGm3qXuvogcaRtFxcorejqM6KQoJtUb0V+RpLUpBHlhkcqKNXWTDZQX8GHd3T4mq7GxWN7ZRvh6zBgbJbLRlYvJJiArdeaXZB3z6QKbwuXEud8WicU2XpFG0x7apAa4FU3UiYIa01i1ZBMbHDUnqtwTUoCqqs3WBfDe2WO+Jz0ucWx+Uzj15Oa5LfdoqWu+ZHFOZUh9wyd6O28466xCL2XxdnVCnxasphUbnRKXaZU21EltJII7dBUFMSq/PrPNK/KJnmFGlf6sy7VDZ3w9Q7Jq6MtURBCb2Sr2lCHu3if+F8SY0J9fTLjTz1oHf8MfT0Yf8CbKGrGaLBAQ4AAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="create_bucket_button"
+        title="create_bucket_button"
+        src="/static/6288c653c95d001f09a7975e9276b7d9/5a190/pic_3.png"
+        srcset="/static/6288c653c95d001f09a7975e9276b7d9/772e8/pic_3.png 200w,
+/static/6288c653c95d001f09a7975e9276b7d9/e17e5/pic_3.png 400w,
+/static/6288c653c95d001f09a7975e9276b7d9/5a190/pic_3.png 800w,
+/static/6288c653c95d001f09a7975e9276b7d9/33c9c/pic_3.png 1133w"
+        sizes="(max-width: 800px) 100vw, 800px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+      />
+  </a>
+    </span></li>
 <li>On Page 4 click <em>Create bucket</em></li>
 </ul>
-<p>Your bucket will now display on the S3 buckets page. We now need to congure it for static web hosting. </p>
+<p>Your bucket will now display on the S3 buckets page. The next step is to configure it for static web hosting. </p>
 <ul>
 <li>Click on the name of the bucket, and then click on the Properties tab on the bucket details page. </li>
 <li>Click on <em>Static website hosting</em>.</li>
 <li>In the Static website hosting form, type "index.html" in the <em>Index document</em> field and click <em>Save</em></li>
 </ul>
-<p>Now we need to add a Bucket Policy to allow your users to request access to your wbesite's files:</p>
+<p>Now add a Bucket Policy to allow your users to request access to your wbesite's files:</p>
 <ul>
 <li>Click on the Permissions tab</li>
 <li>Click on Bucket Policy</li>
 <li>
-<p>Enter the following Bucket Policy (make sure to change "albertlockett.ca" for your bucket's name)</p>
+<p>Enter the following Bucket Policy (make sure to change "albertlockett.ca" to the domain from Step 1 for the bucket's
+name)</p>
 <pre><code>{
 "Version": "2012-10-17",
 "Statement": [
@@ -47,7 +146,7 @@ is then displayed. click Next</li>
 </code></pre>
 </li>
 </ul>
-<p>Next we need to upload the content for your static site into the S3 bucket.</p>
+<p>Next we need to upload the content for the static site into the S3 bucket.</p>
 <ul>
 <li>On the <em>Overview</em> tab click the <em>Upload</em> button</li>
 <li>Click <em>Add Files</em> and choose all the files for your website, click Next</li>
@@ -142,4 +241,4 @@ using Route 53, just click <em>Create Record in Route 53</em> and it will create
 your site at your own domain name:</p>
 <p><a href="http://albertlockett.ca">http://albertlockett.ca</a></p>
 <p>or using HTTPS</p>
-<p><a href="https://albertlockett.ca">https://albertlockett.ca</a></p></div></div></div></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/blog/aws-site-setup";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-660331b71bcc66af304a.js"],"component---src-templates-blog-template-js":["/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js"],"component---src-pages-404-js":["/component---src-pages-404-js-0290f163286959b63491.js"],"component---src-pages-index-js":["/component---src-pages-index-js-4e42b846db4997ff14a6.js"],"component---src-pages-page-2-js":["/component---src-pages-page-2-js-c533758acaabdefda86a.js"]};/*]]>*/</script><script src="/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js" async=""></script><script src="/app-660331b71bcc66af304a.js" async=""></script><script src="/commons-cc051047d162e7351cdf.js" async=""></script><script src="/webpack-runtime-a1db10ce3c94241c4451.js" async=""></script></body></html>
+<p><a href="https://albertlockett.ca">https://albertlockett.ca</a></p></div></div></div></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/blog/aws-site-setup";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-7125ef222e6b22ce8e89.js"],"component---src-templates-blog-template-js":["/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js"],"component---src-pages-404-js":["/component---src-pages-404-js-0290f163286959b63491.js"],"component---src-pages-index-js":["/component---src-pages-index-js-b304732a7122ffdba859.js"],"component---src-pages-page-2-js":["/component---src-pages-page-2-js-a28c7931d51e8ba870ab.js"]};/*]]>*/</script><script src="/component---src-templates-blog-template-js-12dacc1e3c9f9ec834ec.js" async=""></script><script src="/app-7125ef222e6b22ce8e89.js" async=""></script><script src="/commons-0ef4a132d6134d661f8d.js" async=""></script><script src="/webpack-runtime-a1d09272d7fa82057848.js" async=""></script></body></html>

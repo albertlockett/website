@@ -13,35 +13,17 @@ import Header from "./header"
 import "./layout.css"
 
 const Layout = ({ children }) => {
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        id
-        # siteMetadata {
-        #   title
-        # }
-      }
-    }
-  `)
 
   return (
-    <>
-      <Header siteTitle={data.site.id} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
-        }}
-      >
+    <div>
+      <Header siteTitle={'Albert Lockett'} />
+      <div>
         <main>{children}</main>
         <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
+          © {new Date().getFullYear()} Albert Lockett
         </footer>
       </div>
-    </>
+    </div>
   )
 }
 
