@@ -1,28 +1,41 @@
-<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><style data-href="/styles.078826638a7845b3e96c.css">.blog-post-container{font-family:Helvetica,Arial,sans-serif;font-weight:300;font-size:12px;max-width:960px;margin:auto}.blog-post-container a{color:#000}.blog-post-container .breadcrumb-sep{font-size:8px;margin:1px;position:relative;top:-1px}.blog-post-container .post-title{font-size:68px;font-weight:800;padding-top:6px}.blog-post-container .post-date{font-size:12px;font-style:italic;position:relative;top:-6px}.home-page{font-family:Helvetica,Arial,sans-serif;font-weight:300;font-size:12px}.big-title{font-size:68px;font-weight:800}.little-title{font-size:12px;font-weight:600}.home-page .contact{position:relative;top:-10px;left:2px}.home-page a{color:#000}</style><meta name="generator" content="Gatsby 2.19.7"/><link as="script" rel="preload" href="/webpack-runtime-7c93b05019e5e8275e5e.js"/><link as="script" rel="preload" href="/commons-4ee73e8c6fb0caa6033d.js"/><link as="script" rel="preload" href="/app-648d20e88dddee9f66e4.js"/><link as="script" rel="preload" href="/styles-0647a6db614420569be1.js"/><link as="script" rel="preload" href="/component---src-templates-blog-template-js-21b73909c237b74a92fe.js"/><link as="fetch" rel="preload" href="/page-data/blog/aws-site-setup/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><div class="blog-post-container"><div><span><a href="/">Home</a></span><span class="breadcrumb-sep"> &gt; </span><span>Blog</span><span class="breadcrumb-sep"> &gt; </span></div><div class="blog-post"><div class="post-title">AWS Site Setup</div><div class="post-date">February 19, 2020</div><div><p>The information in this article will help you to set up a website on AWS</p>
-<p>TODO: Prerequisites and example projects</p>
+<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><style data-href="/styles.b2f1172bc5f64d02a122.css">.blog-post-container{font-family:Helvetica,Arial,sans-serif;font-weight:300;font-size:14px;max-width:680px;margin:auto}.blog-post-container p{text-align:justify}.blog-post-container a{color:#000}.blog-post-container .breadcrumb-sep{font-size:8px;margin:1px;position:relative;top:-1px}.blog-post-container .post-title{font-size:68px;font-weight:800;padding-top:6px}.blog-post-container .post-date{font-size:12px;font-style:italic;position:relative;top:-6px}.home-page{font-family:Helvetica,Arial,sans-serif;font-weight:300;font-size:12px}.big-title{font-size:68px;font-weight:800}.little-title{font-size:12px;font-weight:600}.home-page .contact{position:relative;top:-10px;left:2px}.home-page a{color:#000}</style><meta name="generator" content="Gatsby 2.19.7"/><link as="script" rel="preload" href="/webpack-runtime-fad388f0d3e52a778a7b.js"/><link as="script" rel="preload" href="/commons-4ee73e8c6fb0caa6033d.js"/><link as="script" rel="preload" href="/app-648d20e88dddee9f66e4.js"/><link as="script" rel="preload" href="/styles-0647a6db614420569be1.js"/><link as="script" rel="preload" href="/component---src-templates-blog-template-js-fb005f6d16b4d4a3414e.js"/><link as="fetch" rel="preload" href="/page-data/blog/aws-site-setup/page-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper"><div class="blog-post-container"><div><span><a href="/">Home</a></span><span class="breadcrumb-sep"> &gt; </span><span>Blog</span><span class="breadcrumb-sep"> &gt; </span></div><div class="blog-post"><div class="post-title">AWS Website Setup</div><div class="post-date">February 19, 2020</div><div><p>In this modern age, where internet and computers are so ubiquitous, many indiviuals and businesses would like to
+have their own website. A website can be used to tell web-surfers about yourself, your interests, or other pertinant
+information think is worth sharing. Fortunately there are many services that can be used to create your own  website
+and host it. These services vary widely in their cost, ease of use and features.</p>
+<p>Aspiring website administrators may consider using AWS to host their site. It may not be as user friendly as some other
+services, but it provies a lot more flexibility. What&#x27;s more, the extra work you will have to do to deploy your website
+on AWS may bring you a nice sense of accomplishment. It will be a good learning experience, and an added bonus is that
+having some AWS experience will look good on your CV.</p>
+<p>This post will cover the steps necessary to deploy your static website on AWS. It will describe how to host the website
+using S3, use ACM to create a TLS certificate for your site, and use CloudFront to enable HTTPS and caching. I&#x27;ll also
+be using Route53 to register my domain name, but this is by no means a requirement. If you&#x27;ve registered your domain
+already using some other DNS service, you can skip part one.</p>
+<p>Here are the prerequisites:</p>
 <ul>
-<li>AWS Account</li>
-<li>AWS credentials and cli installed</li>
-<li>Static content for website</li>
-<li>API Server (optional)</li>
+<li>AWS Account - If you don&#x27;t have one already you can
+<a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/">create one</a></li>
+<li>Static content for website - You can build your own website with the content you want to show the internet. If you
+don&#x27;t have a site built, you can <a href="/aws-site-setup-example-site.zip">download</a>, extract and use the files from this
+exmaple to follow along</li>
 </ul>
 <h2>1. Register your Domain</h2>
 <p>First a domain will be needed to use for the website. Route53 can be used to register it.</p>
+<p>TODO write this section</p>
 <h2>2. Create an S3 Bucket for your site</h2>
-<p>In the <a>AWS Console</a> click on <em>Services</em> and then search for S3. Clicking
-S3 should take you to the <a>S3 home page</a>.</p>
+<p>In the <a href="https://console.aws.amazon.com/console/home">AWS Console</a> click on <em>Services</em> and then search for S3. Clicking
+S3 should take you to the <a href="https://s3.console.aws.amazon.com/s3/home">S3 home page</a>.</p>
 <p>Now create a new bucket to hold the static content for the site</p>
 <ul>
 <li>Click the <em>Create bucket</em> button
 <span>
-      <a>
+      <a href="/static/1e6851a02635804d411b9ccf974e2b4e/1132d/pic_1.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
     </span></li>
 <li>In the <em>Bucket name</em> input, give it the domain-name of your website (i.e &quot;albertlockett.ca&quot;), click Next
 <span>
-      <a>
+      <a href="/static/ebe94395cb01006763574b0b17b85da8/cf4cc/pic_2.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
@@ -31,7 +44,7 @@ S3 should take you to the <a>S3 home page</a>.</p>
 <li>On Page 3 (<em>Set Permissions</em> page), uncheck <em>Block all public access</em>, and then <em>I acknowlegdge...</em> in the dialog that
 is then displayed. click Next
 <span>
-      <a>
+      <a href="/static/6288c653c95d001f09a7975e9276b7d9/33c9c/pic_3.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
@@ -40,23 +53,23 @@ is then displayed. click Next
 </ul>
 <p>Your bucket will now display on the S3 buckets page. The next step is to configure it for static web hosting. </p>
 <ul>
-<li>Click on the name of the bucket, and then click on the Properties tab on the bucket details page. </li>
-<li><span>
-      <a>
+<li>Click on the name of the bucket, and then click on the Properties tab on the bucket details page.
+<span>
+      <a href="/static/1afdfda563a926138163344bc5f8ef6a/e6c84/pic_4.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
     </span></li>
-<li>Click on <em>Static website hosting</em>.</li>
-<li><span>
-      <a>
+<li>Click on <em>Static website hosting</em>.
+<span>
+      <a href="/static/c3b4be2ab571c1c9b890745ece44f4bb/f680b/pic_5.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
     </span></li>
-<li>In the Static website hosting form, type &quot;index.html&quot; in the <em>Index document</em> field and click <em>Save</em></li>
-<li><span>
-      <a>
+<li>In the Static website hosting form, type &quot;index.html&quot; in the <em>Index document</em> field and click <em>Save</em>
+<span>
+      <a href="/static/206cd4cc6189977e49575f6fa3b8257a/084e2/pic_6.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
@@ -66,55 +79,41 @@ is then displayed. click Next
 <ul>
 <li>Click on the Permissions tab</li>
 <li>Click on Bucket Policy</li>
-<li>
-<p>Enter the following Bucket Policy (make sure to change &quot;albertlockett.ca&quot; to the domain from Step 1 for the bucket&#x27;s
-name)</p>
-<pre><code>{
-&quot;Version&quot;: &quot;2012-10-17&quot;,
-&quot;Statement&quot;: [
-    {
-        &quot;Sid&quot;: &quot;PublicReadGetObject&quot;,
-        &quot;Effect&quot;: &quot;Allow&quot;,
-        &quot;Principal&quot;: &quot;*&quot;,
-        &quot;Action&quot;: &quot;s3:GetObject&quot;,
-        &quot;Resource&quot;: &quot;arn:aws:s3:::albertlockett.ca/*&quot;
-    }
-]
-}
-</code></pre>
-</li>
-<li>
-<ul>
-<li><span>
-      <a>
+<li>Enter the following Bucket Policy (make sure to change &quot;albertlockett.ca&quot; to the domain from Step 1 for the bucket&#x27;s
+name)
+<span>
+      <a href="/static/40d07c2767825f997e9b559490b03b32/29c1d/pic_7.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
     </span></li>
 </ul>
-</li>
-</ul>
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Sid&quot;: &quot;PublicReadGetObject&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: &quot;*&quot;,
+            &quot;Action&quot;: &quot;s3:GetObject&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::albertlockett.ca/*&quot;
+        }
+    ]
+}
+</code></pre>
 <p>Next we need to upload the content for the static site into the S3 bucket.</p>
 <ul>
 <li>On the <em>Overview</em> tab click the <em>Upload</em> button</li>
-<li>Click <em>Add Files</em> and choose all the files for your website, click Next</li>
-<li><span>
-      <a>
+<li>Click <em>Add Files</em> and choose all the files for your website, click Next <span>
+      <a href="/static/4618ee122f5a9265ac5b8bc25b555091/f680b/pic_8.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
     </span></li>
 <li>On the <em>Set Permissions</em> page, in the section called <em>Manage Public Permissions</em> choose <em>Grant Public Read Access
-to this Object(s)</em>
-<span>
-      <a>
-    <span></span>
-  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
-  </a>
-    </span></li>
-<li>Click Next on Page 3 to accept defaults</li>
-<li><span>
-      <a>
+to this Object(s) ![create</em>bucket<em>button](./aws-site-setup/part</em>2/pic_9.png)</li>
+<li>Click Next on Page 3 to accept defaults <span>
+      <a href="/static/80ea14a524dc8f6c5c27cd552523ef89/d3f96/pic_10.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
@@ -124,7 +123,7 @@ to this Object(s)</em>
 <p>TODO put hint here about using the CLI</p>
 <p>Now you&#x27;ll see your objects in the bucket.
 <span>
-      <a>
+      <a href="/static/2644e6beec8b963a45a606bd1971b3c8/d5eae/pic_11.png">
     <span></span>
   <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
   </a>
@@ -132,7 +131,7 @@ to this Object(s)</em>
 <p>Now we can test our bucket is configured correctly. In your web browser, navigate to your bucket&#x27;s URL like this
 (change albertlockett.ca for your bucket name). You can also get the bucket name Properties -&gt; Static Web Hosting and
 the link is beside a label called Endpoint.</p>
-<p><a>http://albertlockett.ca.s3-website-us-east-1.amazonaws.com/</a></p>
+<p><a href="http://albertlockett.ca.s3-website-us-east-1.amazonaws.com/">http://albertlockett.ca.s3-website-us-east-1.amazonaws.com/</a></p>
 <p>You have the option now to create a DNS alias record for your domain to
 albertlockett.ca.s3-website-us-east-1.amazonaws.com, but this has two disadvantages:</p>
 <ul>
@@ -146,11 +145,20 @@ your app, if they refresh the page they&#x27;ll get the S3 403 response.</li>
 nice for performance, using CloudFront also allows us to serve the content over HTTPS and it allows us to use custom
 error pages. We can use this custom error page functionality to return /index.html for any GET requests for content that
 isn&#x27;t in our bucket. This is especially useful for sites using a client-side routing framework like react-router.</p>
-<p>In the <a>AWS Console</a> click on <em>Services</em> and then search for CloudFront.
-Clicking CloudFront should take you to the <a>CloudFront home page</a>. On
-this page, click <em>Create Distribution</em>.</p>
+<p>In the <a href="https://console.aws.amazon.com/console/home">AWS Console</a> click on <em>Services</em> and then search for CloudFront.
+Clicking CloudFront should take you to the <a href="https://console.aws.amazon.com/cloudfront/home">CloudFront home page</a>. On
+this page, click <em>Create Distribution</em>. <span>
+      <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+    </span></p>
 <ul>
-<li>Chose <em>Get Started</em> under the <em>Web</em> section. You&#x27;ll be taken to the <em>Create Distribution</em> form</li>
+<li>Chose <em>Get Started</em> under the <em>Web</em> section. You&#x27;ll be taken to the <em>Create Distribution</em> form
+<span>
+      <a href="/static/33f3344ecc3d79500ec14f49a72723cb/b7756/pic_2.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span></li>
 <li>In the <em>Origin Settings</em> section, in the <em>Origin Domain Name</em> field, choose your new bucket (for example:
 albertlockett.ca.s3.amazonaws.com)</li>
 <li>In the <em>Distribution Settings</em> section, choose <em>Use Only U.S., Canada and Europe</em> in the Price Class setting (this is
@@ -158,59 +166,109 @@ the cheapest option).</li>
 <li>Click <em>Create Distribution</em></li>
 </ul>
 <p>AWS will begin provisioning your CloudFront distribution. You&#x27;ll see your distribution with Status of <em>In Progress</em>. It
-can take quite a while for the service to provision.</p>
+can take quite a while for the service to provision. <span>
+      <a href="/static/afb7f2536cce7956ebe1006ae183202d/fe27b/pic_3.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span></p>
 <p>You can also see CloudFront creates a domain name for your distribution (i.e., d3f0oyjgi4e6fq.cloudfront.net). Once your
 distribution status changes to <em>Deployed</em>, you should be able to paste this in your browser and be taken to your site.</p>
 <p><em>Note</em> you&#x27;ll have to request an actual resource like /index.html, otherwise you&#x27;ll get a 403 message. e.g.
-<a>http://d3f0oyjgi4e6fq.cloudfront.net/index.html</a></p>
+<a href="http://d3f0oyjgi4e6fq.cloudfront.net/index.html">http://d3f0oyjgi4e6fq.cloudfront.net/index.html</a></p>
 <p>This is not ideal, but we can get the right content by setting up a custom error response. </p>
 <ul>
 <li>Click on the ID link of your distribution</li>
 <li>Click on the Error Pages tab</li>
-<li>Click Create Custom Error Response</li>
+<li>Click Create Custom Error Response <span>
+      <a href="/static/b7a295e5124568ec30550937b4f711dd/d9ed5/pic_4.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span></li>
 <li>Choose <em>HTTP Error Code</em> - <em>403: Forbidden</em></li>
 <li>Choose <em>Customie Error Response</em> - <em>Yes</em></li>
 <li>In Response Page Path type <em>/index.html</em></li>
 <li>Choose <em>HTTP Response Code</em> - <em>200: OK</em></li>
-<li>Click <em>Create</em></li>
+<li>Click <em>Create</em> <span>
+      <a href="/static/03c5b70c8aa53af47022ed79a8586c0f/016a8/pic_5.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span></li>
 </ul>
 <p>Your distribution may enter the <em>In Progress</em> status again after setting up the custom error response. After some time,
 you should be able to go to &quot;/&quot; at your CloudFront domain and get the right content (i.e.
-<a>http://d3f0oyjgi4e6fq.cloudfront.net/</a>)</p>
+<a href="http://d3f0oyjgi4e6fq.cloudfront.net/">http://d3f0oyjgi4e6fq.cloudfront.net/</a>)</p>
 <h1>4 Use your custom domain for CloudFront</h1>
 <p>You can now create an Alias record on your custom Domain, but CloudFront won&#x27;t serve the content unless you configure
 CloudFront with an SSL Certificate, so we&#x27;ll set one of those up first. There are probably many options to get yourself
 a cert but I&#x27;m going to use AWS&#x27;s Certificate Manager (ACM) service.</p>
 <p>Note that to request a cert through ACM, you either need access to create DNS records for that domain, or you need
 access to the WHOIS contact info for the domain (or one of the admin email addresses).</p>
-<p>In the <a>AWS Console</a> click on <em>Services</em> and then search for Certificate
-Manager. Clicking CloudFront should take you to the <a>ACM home page</a>. On
+<p>In the <a href="https://console.aws.amazon.com/console/home">AWS Console</a> click on <em>Services</em> and then search for Certificate
+Manager. Clicking CloudFront should take you to the <a href="https://console.aws.amazon.com/acm/hom">ACM home page</a>. On
 this page, click <em>Request a certificate</em>.</p>
 <ul>
 <li>Choose Request a public certificate</li>
-<li>In the <em>Add domain names</em> form, type your domain name and click Next</li>
+<li>In the <em>Add domain names</em> form, type your domain name and click Next
+<span>
+      <a href="/static/23061dc40161d054023a32610fb024e8/cbe7f/pic_1.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span></li>
 <li>Here there are two options for validating that you are the owner of the cert. I&#x27;m going to use DNS Validation but if
 you want to use email validation you can do that
-<a>here</a>. Choose <em>DNS Validation</em></li>
+<a href="https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-email.html">here</a>. Choose <em>DNS Validation</em></li>
 <li>Add tags if you like, or click <em>Review</em></li>
-<li>Click <em>Confirm and Request</em></li>
+<li>Click <em>Confirm and Request</em>
+<span>
+      <a href="/static/a8781f989a3fd4e6a48b310be38d6e2b/1cc3c/pic_1_1.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span></li>
 </ul>
 <p>You&#x27;ll now have to go through a validation process with AWS to have the cert issued. If you&#x27;re using DNS validation,
-you&#x27;ll see that it wants you to create a CNAME entry with your DNS provider in order to validate the cert. If you&#x27;re
-using Route 53, just click <em>Create Record in Route 53</em> and it will create the validation record automatically.</p>
+you&#x27;ll see that it wants you to create a CNAME entry with your DNS provider in order to validate the cert.
+<span>
+      <a href="/static/f2e8f07f6fda9163fb0430759bd84569/ac25d/pic_2.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span>
+If you&#x27;re using Route 53, just click <em>Create Record in Route 53</em> and it will create the validation record automatically.</p>
 <p>Also note it may take up to 30 minutes for the changes to propagate, and for AWS to validate the domain.</p>
 <p>After Validation you can click <em>Continue</em>.</p>
 <p>Now it&#x27;s time to configure the CloudFront distribution with your custom domain name and SSL cert. </p>
 <ul>
 <li>Go to CloudFront and clikc on the ID link for your distribution</li>
-<li>Click Edit</li>
+<li>Click Edit
+<span>
+      <a href="/static/cc2186e9d65c747b0f228163b3b7a20f/252a4/pic_3.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span> </li>
 <li>In the box that says <em>Alternate Domain Names (CNAMEs)</em> type your custom domain name (e.g. albertlockett.ca)</li>
 <li>In the <em>SSL Certificate</em> field, choose <em>Custom SSL Certificate (example.com):</em></li>
-<li>In the textbox, choose your cert</li>
+<li>In the textbox, choose your cert
+<span>
+      <a href="/static/1d0b1b614ff3bbeb6733d7c045ca84c7/e3729/pic_4.png">
+    <span></span>
+  <span style="max-width:100px;max-height:100px"><button style="padding:0;cursor:pointer;background:white;border:none;z-index:0" class="display-picture-button"><img style="width:12px;height:12px;cursor:pointer;position:relative;top:2px;z-index:1" src="/image_icon.png"/></button></span>
+  </a>
+    </span> </li>
 <li>click <em>Yes, Edit</em> at the bottom of the form</li>
 </ul>
 <p>Your CloudFront distribution will enter the <em>In Progress</em> state again. After it&#x27;s done you should be able to access
 your site at your own domain name:</p>
-<p><a>http://albertlockett.ca</a></p>
+<span></span>
+<p><a href="http://albertlockett.ca">http://albertlockett.ca</a></p>
 <p>or using HTTPS</p>
-<p><a>https://albertlockett.ca</a></p></div></div></div></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/blog/aws-site-setup";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-648d20e88dddee9f66e4.js"],"component---src-templates-blog-template-js":["/component---src-templates-blog-template-js-21b73909c237b74a92fe.js"],"component---src-pages-404-js":["/component---src-pages-404-js-0290f163286959b63491.js"],"component---src-pages-index-js":["/component---src-pages-index-js-43d9abe04f404a54d220.js"],"component---src-pages-page-2-js":["/component---src-pages-page-2-js-a28c7931d51e8ba870ab.js"]};/*]]>*/</script><script src="/component---src-templates-blog-template-js-21b73909c237b74a92fe.js" async=""></script><script src="/styles-0647a6db614420569be1.js" async=""></script><script src="/app-648d20e88dddee9f66e4.js" async=""></script><script src="/commons-4ee73e8c6fb0caa6033d.js" async=""></script><script src="/webpack-runtime-7c93b05019e5e8275e5e.js" async=""></script></body></html>
+<p><a href="https://albertlockett.ca">https://albertlockett.ca</a></p>
+<p>TODO proofread document</p>
+<h1>Appendix B Creating DNS records in Route 53</h1>
+<p>TODO write this</p>
+<span></span></div></div></div></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/blog/aws-site-setup";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-648d20e88dddee9f66e4.js"],"component---src-templates-blog-template-js":["/component---src-templates-blog-template-js-fb005f6d16b4d4a3414e.js"],"component---src-pages-404-js":["/component---src-pages-404-js-0290f163286959b63491.js"],"component---src-pages-index-js":["/component---src-pages-index-js-43d9abe04f404a54d220.js"],"component---src-pages-page-2-js":["/component---src-pages-page-2-js-a28c7931d51e8ba870ab.js"]};/*]]>*/</script><script src="/component---src-templates-blog-template-js-fb005f6d16b4d4a3414e.js" async=""></script><script src="/styles-0647a6db614420569be1.js" async=""></script><script src="/app-648d20e88dddee9f66e4.js" async=""></script><script src="/commons-4ee73e8c6fb0caa6033d.js" async=""></script><script src="/webpack-runtime-fad388f0d3e52a778a7b.js" async=""></script></body></html>

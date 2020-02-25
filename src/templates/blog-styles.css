@@ -1,9 +1,13 @@
 .blog-post-container {
   font-family: Helvetica, Arial, sans-serif;
   font-weight: 300;
-  font-size: 12px;
-  max-width: 960px;
+  font-size: 14px;
+  max-width: 680px;
   margin: auto;
+}
+
+.blog-post-container p {
+  text-align: justify;
 }
 
 .blog-post-container a {

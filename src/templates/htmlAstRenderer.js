@@ -14,7 +14,6 @@ function getComponent(definition) {
 
   console.warn('could not determine component type for defniition', definition)
   return 'span'
-
 }
 
 function renderComponent(definition) {
@@ -37,7 +36,12 @@ function renderComponent(definition) {
 
   const component = getComponent(definition);
 
-  return React.createElement(component, {}, children)
+  const props = {}
+  if (component === 'a') {
+    props.href = definition.properties.href
+  }
+
+  return React.createElement(component, props, children)
 }
 
 export default function renderFullAst(htmlAst) {
