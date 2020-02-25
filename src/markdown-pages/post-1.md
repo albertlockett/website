@@ -4,17 +4,6 @@ date: "2020-02-19"
 title: "AWS Site Setup"
 ---
 
-
-
-<!-- ![create_bucket_button](../pic_1.png) -->
-<!-- ![create_bucket_button](../../pic_1.png) -->
-<!-- ![create_bucket_button](/images/pic_1.png) -->
-<!-- ![create_bucket_button](/markdown-pages/pic_1.png) -->
-<!-- ![create_bucket_button](../markdown-pages/pic_1.png)
-![create_bucket_button](src/markdown-pages/pic_1.png)
-![create_bucket_button](/blog/aws-site-setup/part_2/pic_1.png)
-![create_bucket_button](../images/gatsby-astronaut.png) -->
-
 The information in this article will help you to set up a website on AWS
 
 TODO: Prerequisites and example projects
@@ -47,8 +36,11 @@ Now create a new bucket to hold the static content for the site
 
 Your bucket will now display on the S3 buckets page. The next step is to configure it for static web hosting. 
 - Click on the name of the bucket, and then click on the Properties tab on the bucket details page. 
+- ![create_bucket_button](./aws-site-setup/part_2/pic_4.png)
 - Click on _Static website hosting_.
+- ![create_bucket_button](./aws-site-setup/part_2/pic_5.png)
 - In the Static website hosting form, type "index.html" in the _Index document_ field and click _Save_
+- ![create_bucket_button](./aws-site-setup/part_2/pic_6.png)
 
 Now add a Bucket Policy to allow your users to request access to your wbesite's files:
 - Click on the Permissions tab
@@ -70,17 +62,23 @@ Now add a Bucket Policy to allow your users to request access to your wbesite's 
 }
 ```
 
+- - ![create_bucket_button](./aws-site-setup/part_2/pic_7.png)
+
 Next we need to upload the content for the static site into the S3 bucket.
 - On the _Overview_ tab click the _Upload_ button
 - Click _Add Files_ and choose all the files for your website, click Next
+- ![create_bucket_button](./aws-site-setup/part_2/pic_8.png)
 - On the _Set Permissions_ page, in the section called _Manage Public Permissions_ choose _Grant Public Read Access 
   to this Object(s)_
+  ![create_bucket_button](./aws-site-setup/part_2/pic_9.png)
 - Click Next on Page 3 to accept defaults
+- ![create_bucket_button](./aws-site-setup/part_2/pic_10.png)
 - Click Upload
 
 TODO put hint here about using the CLI
 
 Now you'll see your objects in the bucket.
+![create_bucket_button](./aws-site-setup/part_2/pic_11.png)
 
 Now we can test our bucket is configured correctly. In your web browser, navigate to your bucket's URL like this
 (change albertlockett.ca for your bucket name). You can also get the bucket name Properties -> Static Web Hosting and 

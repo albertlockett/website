@@ -16,12 +16,8 @@ const Layout = ({ children }) => {
 
   return (
     <div>
-      <Header siteTitle={'Albert Lockett'} />
       <div>
         <main>{children}</main>
-        <footer>
-          © {new Date().getFullYear()} Albert Lockett
-        </footer>
       </div>
     </div>
   )
