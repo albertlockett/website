@@ -1,6 +1,7 @@
 import React from "react"
 import { graphql } from "gatsby"
 
+import Layout from "../components/layout"
 import htmlAstRenderer from './htmlAstRenderer'
 import './blog-styles.css'
 
@@ -15,21 +16,23 @@ export default function Template({
 
   const innerStuff = htmlAstRenderer(htmlAst)
   return (
-    <div className="blog-post-container">
-      <div>
-        <span>
-          <a href="/">Home</a>
-        </span>
-        <span className="breadcrumb-sep"> > </span>
-        <span>Articles</span>
-        <span className="breadcrumb-sep"> > </span>
+    <Layout>
+      <div className="blog-post-container">
+        <div>
+          <span>
+            <a href="/">Home</a>
+          </span>
+          <span className="breadcrumb-sep"> > </span>
+          <span>Articles</span>
+          <span className="breadcrumb-sep"> > </span>
+        </div>
+        <div className="blog-post">
+          <div className="post-title">{frontmatter.title}</div>
+          <div className="post-date">{frontmatter.date}</div>
+          {innerStuff}
+        </div>
       </div>
-      <div className="blog-post">
-        <div className="post-title">{frontmatter.title}</div>
-        <div className="post-date">{frontmatter.date}</div>
-        {innerStuff}
-      </div>
-    </div>
+    </Layout>
   )
 }
 

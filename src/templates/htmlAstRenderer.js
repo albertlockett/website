@@ -22,7 +22,6 @@ function renderComponent(definition) {
   }
 
   if (definition.type === 'element' && definition.tagName === 'img') {
-    console.log(definition)
     return <PoppingImage {...definition.properties} />
   }
 

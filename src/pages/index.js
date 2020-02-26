@@ -1,8 +1,5 @@
 import React from "react"
-import { Link } from "gatsby"
-
 import Layout from "../components/layout"
-import SEO from "../components/seo"
 
 const IndexPage = () => (
   <Layout>
@@ -11,7 +8,7 @@ const IndexPage = () => (
         Albert Lockett
       </div>
       <div className="contact">
-        Frdericton, NB<br/>  
+        <em>Frdericton, NB</em><br/>  
         <a href="mailto:albert.lockett@gmail.com">albert.lockett@gmail.com</a><br />
         <a href="https://github.com/albertlockett" target="_">github.com/albertlockett</a><br />
         <a href="https://www.linkedin.com/in/albert-lockett-18770255/" target="_">LinkedIn</a><br />

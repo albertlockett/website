@@ -1,3 +1,39 @@
+body {
+  margin: 0
+}
+
+.page-content {
+  min-height: 100vh;
+  min-width: 100vw;
+  padding: 12px 0px;
+}
+
+.page-content-darkmode {
+  background: black;
+  color: white;
+}
+
+.page-content-darkmode a {
+  color: white !important;
+}
+
+.view-controls {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.5;
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 12px;
+  font-style: italic;
+  user-select: none;
+}
+
+.view-controls:hover {
+  opacity: 1;
+} 
+
 .home-page {
   font-family: Helvetica, Arial, sans-serif;
   font-weight: 300;
