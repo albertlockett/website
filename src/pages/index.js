@@ -42,8 +42,8 @@ const IndexPage = () => (
         Articles
       </div>
       <div>
-        <a href="/blog/aws-site-setup">AWS Site Setup (WIP)</a>{' '}
-        - how to deploy a site on AWS w/ s3, cloudfront, EC2, ELB including TLS
+        <a href="/blog/aws-site-setup">AWS Site Setup</a>{' '}
+        - how to deploy a site on AWS w/ s3, cloudfront including TLS
       </div>
     </div>
   </Layout>

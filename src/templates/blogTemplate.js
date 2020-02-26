@@ -21,7 +21,7 @@ export default function Template({
           <a href="/">Home</a>
         </span>
         <span className="breadcrumb-sep"> > </span>
-        <span>Blog</span>
+        <span>Articles</span>
         <span className="breadcrumb-sep"> > </span>
       </div>
       <div className="blog-post">

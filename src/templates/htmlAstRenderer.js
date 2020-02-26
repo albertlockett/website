@@ -38,7 +38,9 @@ function renderComponent(definition) {
 
   const props = {}
   if (component === 'a') {
-    props.href = definition.properties.href
+    if (!(definition.properties.href || '.png').endsWith('.png')) {
+      props.href = definition.properties.href
+    }
   }
 
   return React.createElement(component, props, children)
