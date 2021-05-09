@@ -15,7 +15,7 @@ const IndexPage = () => (
         <a href="/CV_AlbertLockett_Feb2020_V3.pdf">CV</a>
       </div>
 
-      <br />
+      {/* <br />
       <div className="little-title">
         Myself
       </div>
@@ -32,7 +32,7 @@ const IndexPage = () => (
         <a href="http://terrylockett.ca" target="_">terrylockett.ca</a> - brother
         <br />
         <a href="http://lockett.ca" target="_">lockett.ca</a> - dad
-      </div>
+      </div> */}
 
       <br />
       <div className="little-title">
