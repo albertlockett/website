@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "jsx": "react",
+    "allowJs": true,
+    "target": "esnext",
+    "module": "commonjs",
+  },
+  "include": ["./src/**/*"]
+}

@@ -1,6 +1,7 @@
 node_modules/
 lib/
 tmp/
+dist/
 .cache
 *.DS_Store*
 *.swp
