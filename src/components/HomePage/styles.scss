@@ -11,8 +11,7 @@ $body-width: 700px;
     @extend .navigation-default-desktop;
     .link a {
       color: $body-color;
-      text-decoration-color: $accent;
-      text-decoration-thickness: 2px;
+      text-decoration-color: $accent !important;
     }
   }
   &.page {
@@ -43,7 +42,7 @@ $body-width: 700px;
       position: absolute;
       right: 0;
       top: 125px;
-      width: 400px;
+      width: 800px;
       max-width: calc(100vw - 700px);
       height: 600px;
       overflow: hidden;

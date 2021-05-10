@@ -5,6 +5,8 @@ import Navigation from '../Navigation'
 import Experience from './Experience'
 import Skill from './Skill'
 
+import { CompositSketch, CompositSketchSmile } from '../StaticImages'
+
 import './styles.scss'
 
 const skills = [
@@ -43,12 +45,20 @@ export default function CVPage(): ReactElement {
       <div className={classnames('section', 'summary')}>
         <Navigation />
         <div className="title">Albert Lockett</div>
-        <div className="skills">
-          {skills.map((skill) => (
-            <Fragment key={skill.category}>
-              <Skill {...skill} />
-            </Fragment>
-          ))}
+        <div className="summary-content">
+          <div className="face-picture">
+            <span>
+              <img className="normal" src={CompositSketch} />
+              <img className="smile" onClick={() => alert('ouch!')} src={CompositSketchSmile} />
+            </span>
+          </div>
+          <div className="skills">
+            {skills.map((skill) => (
+              <Fragment key={skill.category}>
+                <Skill {...skill} />
+              </Fragment>
+            ))}
+          </div>
         </div>
       </div>
       <div className={classnames('sections', 'experiences')}>

@@ -14,14 +14,34 @@ $section-gap: 48px;
 
   .summary {
     background: $summary-background;
+    
     color: white;
     padding: 32px 0px;
 
+    .summary-content {
+      display: grid;
+      grid-template-columns: auto auto;
+      max-width: $content-width-dexktop;
+
+
+      .face-picture > span {
+        img {
+          margin-left: 64px;
+          height: 400px;
+        }
+        .smile { display: none;}
+        &:hover {
+          .normal { display: none;}
+          .smile { display: inline; }
+        }
+
+
+
+      }
+    }
+
     .navigation {
       @extend .navigation-default-desktop;
-      .link a {
-        text-decoration-thickness: 2px;
-      }
     }
 
     .title {
@@ -52,7 +72,7 @@ $section-gap: 48px;
   }
 
   .skills {
-    max-width: $content-width-dexktop;
+    
     padding-right: 4px;
 
     .skill {
