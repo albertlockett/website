@@ -1,0 +1,24 @@
+@import "../../assets/base-theme.scss";
+
+.navigation-default-desktop {
+  position: absolute;
+  top: 0;
+  right: 8px;
+}
+
+.navigation {
+  font-family: $font-family-serif-header;
+  font-weight: 200;
+  font-size: 32px;
+  
+  .link {
+    display: inline-block;
+    margin-left: 48px;
+    a {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

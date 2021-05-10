@@ -1,0 +1,77 @@
+@import "../../assets/base-theme.scss";
+@import "../Navigation/styles.scss";
+
+$content-width-dexktop: 1280px;
+
+$summary-background: #6B95D0;
+$exp-background: #FFF9B3;
+$section-gap: 48px;
+
+.cv-page {
+  .section {
+    margin-bottom: $section-gap;
+  }
+
+  .summary {
+    background: $summary-background;
+    color: white;
+    padding: 32px 0px;
+
+    .navigation {
+      @extend .navigation-default-desktop;
+      .link a {
+        text-decoration-thickness: 2px;
+      }
+    }
+
+    .title {
+      font-family: $font-family-serif-header;
+      font-size: 120px;
+      text-transform: lowercase;
+    }
+  }
+
+  .experiences {
+    background: $exp-background;
+
+    .company {
+      display: inline-block;
+      font-family: $font-family-serif-header;
+      font-weight: 600;
+      font-size: 32px;
+    }
+
+    .title {
+      display: inline-block;
+      font-family: $font-family-body;
+      font-weight: 300;
+      font-size: 32px;
+      margin-left: 2px;
+      text-transform: lowercase;
+    }
+  }
+
+  .skills {
+    max-width: $content-width-dexktop;
+    padding-right: 4px;
+
+    .skill {
+      margin-bottom: 24px;
+      text-align: right;
+
+      .category {
+        font-family: $font-family-body;
+        font-weight: $font-weight-body-light;
+        font-size: 22px;
+        text-transform: lowercase;
+      }
+
+      .details {
+        font-family: $font-family-body;
+        font-weight: $font-weight-body-light;
+        font-size: 16px;
+        text-transform: lowercase;
+      }
+    }
+  }
+}
