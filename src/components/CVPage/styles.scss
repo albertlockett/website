@@ -6,10 +6,16 @@ $content-width-dexktop: 1280px;
 $summary-background: #6B95D0;
 $exp-background: #FFF9B3;
 $section-gap: 48px;
+$dark-font: #333333;
 
 .cv-page {
   .section {
     margin-bottom: $section-gap;
+    > .section-title {
+      font-family: $font-family-calson;
+      font-size: 99px;
+      text-transform: lowercase;
+    }
   }
 
   .summary {
@@ -35,8 +41,6 @@ $section-gap: 48px;
           .smile { display: inline; }
         }
 
-
-
       }
     }
 
@@ -52,22 +56,60 @@ $section-gap: 48px;
   }
 
   .experiences {
+    color: $dark-font;
     background: $exp-background;
+    padding-bottom: 1px;
+    margin-bottom: 18px;
+    position: relative;
 
-    .company {
-      display: inline-block;
-      font-family: $font-family-serif-header;
-      font-weight: 600;
-      font-size: 32px;
+    > .section-title {
+      position: absolute;
+      right: 0;
+      top: -20px;
     }
 
-    .title {
-      display: inline-block;
-      font-family: $font-family-body;
-      font-weight: 300;
-      font-size: 32px;
-      margin-left: 2px;
-      text-transform: lowercase;
+    .experience {
+      margin-bottom: 48px;
+
+      .company {
+        display: inline-block;
+        font-family: $font-family-serif-header;
+        font-weight: 600;
+        font-size: 32px;
+      }
+
+      .title {
+        display: inline-block;
+        font-family: $font-family-body;
+        font-weight: 300;
+        font-size: 32px;
+        margin-left: 2px;
+        text-transform: lowercase;
+      }
+
+      .date {
+        display: inline-block;
+        font-family: $font-family-body;
+        font-weight: 300;
+        font-size: 32px;
+        margin-left: 2px;
+        text-transform: lowercase;
+      }
+
+      .date-sep {
+        font-size: 38px;
+        margin: 0px 8px;
+        position: relative;
+        top: 4px;
+      }
+
+      .responsibilities {
+        .responsibility {
+          font-family: $font-family-body;
+          font-weight: 400;
+          font-size: 18px;
+        }
+      }
     }
   }
 
@@ -90,6 +132,35 @@ $section-gap: 48px;
         font-family: $font-family-body;
         font-weight: $font-weight-body-light;
         font-size: 16px;
+        text-transform: lowercase;
+      }
+    }
+  }
+
+  .education {
+    background-color: #B5FBBE;
+    color: $dark-font;
+    position: relative;
+
+    .details {
+      position: absolute;
+      right: 0;
+      top: 24px;
+      text-align: right;
+
+      .school {
+        font-family: $font-family-serif-header;
+        font-weight: 600;
+        font-size: 32px;
+      }
+
+      .program {
+        display: inline-block;
+        display: inline-block;
+        font-family: $font-family-body;
+        font-weight: 300;
+        font-size: 32px;
+        margin-left: 2px;
         text-transform: lowercase;
       }
     }
