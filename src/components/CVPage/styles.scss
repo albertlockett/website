@@ -29,7 +29,6 @@ $dark-font: #333333;
       grid-template-columns: auto auto;
       max-width: $content-width-dexktop;
 
-
       .face-picture > span {
         img {
           margin-left: 64px;
@@ -46,6 +45,10 @@ $dark-font: #333333;
 
     .navigation {
       @extend .navigation-default-desktop;
+      .underline-fadein:after {
+        background-color: white;
+        opacity: 0.7;
+      }
     }
 
     .title {

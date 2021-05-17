@@ -10,7 +10,9 @@ $text-color: #4F4F4F;
   width: 100vw;
 
   .navigation {
-    @extend .navigation-default-desktop;
+    @media(max-width: $media-sm) { @include navigation-default-mobile; }
+    @media(min-width: $media-sm - 1) { @include navigation-default-desktop; }
+
     .link a {
       color: $text-color;
     }
