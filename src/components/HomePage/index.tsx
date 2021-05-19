@@ -18,7 +18,7 @@ export default function HomePage(): ReactElement {
           web-related technologies.
         </div>
       </div>
-      <div div className="home-img" scale="0.5">
+      <div className="home-img" scale="0.5">
         <img src={homeImg} />
       </div>
     </div>

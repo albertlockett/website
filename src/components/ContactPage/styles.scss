@@ -2,6 +2,8 @@
 @import "../Navigation/styles.scss";
 
 $text-color: #4F4F4F;
+$text-but-lighter: #666666;
+$text-but-darker: #353535;
 
 .contact-page {
   color: $text-color;
@@ -10,7 +12,11 @@ $text-color: #4F4F4F;
   width: 100vw;
 
   .navigation {
-    @media(max-width: $media-sm) { @include navigation-default-mobile; }
+    @media(max-width: $media-sm) {
+      @include navigation-default-mobile;
+      border-top: 1px solid $text-but-lighter;
+      .control-icons { color: $text-but-darker; }
+    }
     @media(min-width: $media-sm - 1) { @include navigation-default-desktop; }
 
     .link a {

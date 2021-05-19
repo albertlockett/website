@@ -1,5 +1,7 @@
 @import "../../assets/base-theme.scss";
 
+$open-transition: 200ms;
+
 @mixin navigation-default-desktop {
   position: absolute;
   top: 0;
@@ -8,6 +10,10 @@
   .link {
     display: inline-block;
     margin-left: 48px
+  }
+
+  .control-icons {
+    display: none;
   }
 }
 
@@ -20,16 +26,44 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  padding-bottom: 2px;
+  padding-bottom: 24px;
   text-align: right;
   width: 100vw;
+  height: 24px;
+  transition: height $open-transition;
 
   .link {
     display: table;
     float: right;
     clear: both;
-    margin-bottom: 22px;
+    position: relative;
+    
+    margin-bottom: 32px;
     margin-right: 22px;
+    top: 275px;
+    transition: top $open-transition;
+  }
+
+  .control-icons {
+    margin-right: 12px;
+    position: absolute;
+    bottom: -4px;
+    right: 0;
+    cursor: pointer;
+    transform: rotate(540deg);
+    transition: transform 0.5s;
+  }
+
+  &.open {
+    height: 215px;
+
+    .link {
+      top: 0px;
+    }
+
+    .control-icons {
+      transform: rotate(180deg);
+    }
   }
 }
 
