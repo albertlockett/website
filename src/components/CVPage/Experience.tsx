@@ -1,18 +1,19 @@
 import React, { ReactElement } from 'react'
 
-type ExperienceProps = {
+export type ExperienceProps = {
   company: string
   title: string
   responsibilities: string[]
-  startDate: {
+  startDate?: {
     month: string
     year: number
   }
-  endDate: {
+  endDate?: {
     month: string
     year: number
   }
-  dateRaw: string
+  dateRaw?: string
+  picture: unknown
 }
 
 function formatDate(date) {
@@ -38,6 +39,9 @@ export default function Experience(props: ExperienceProps): ReactElement {
       <div className="date">
         <Date {...props} />
       </div>
+      <div className="logo">
+        <img src={props.picture} />
+      </div>
       <div className="responsibilities">
         {props.responsibilities.map((text, i) => (
           <div key={i} className="responsibility">
@@ -45,6 +49,7 @@ export default function Experience(props: ExperienceProps): ReactElement {
           </div>
         ))}
       </div>
+
     </div>
   )
 }

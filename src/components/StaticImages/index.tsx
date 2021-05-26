@@ -1,2 +1,6 @@
 export { default as CompositSketch } from '../../../static/images/composite_sketch.png'
 export { default as CompositSketchSmile } from '../../../static/images/composite_sketch_smile.png'
+export { default as LogoAliant } from '../../../static/images/aliant_logo_drawn.png'
+export { default as LogoAmbir } from '../../../static/images/ambir_logo_drawn.png'
+export { default as LogoEY } from '../../../static/images/ey_logo_drawn.png'
+export { default as LogoSonrai } from '../../../static/images/sonrai-logo-drawn.png'

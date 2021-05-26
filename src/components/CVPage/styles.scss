@@ -73,6 +73,7 @@ $dark-font: #333333;
 
     .experience {
       margin-bottom: 48px;
+      position: relative;
 
       .company {
         display: inline-block;
@@ -111,6 +112,21 @@ $dark-font: #333333;
           font-family: $font-family-body;
           font-weight: 400;
           font-size: 18px;
+        }
+      }
+
+      .logo {
+        display: inline-block;
+        // float: right;
+        position: absolute;
+        top: 8px;
+        // right: 10px;
+
+        img {
+          position: relative;
+          left: 30px;
+          width: 80px;
+          opacity: 0.3;
         }
       }
     }

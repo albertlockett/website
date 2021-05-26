@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import Navigation from '../Navigation'
 import Experience, { ExperienceProps } from './Experience'
 import Skill from './Skill'
-import { CompositSketch, CompositSketchSmile } from '../StaticImages'
+import { CompositSketch, CompositSketchSmile, LogoAliant, LogoAmbir, LogoEY, LogoSonrai } from '../StaticImages'
 
 import './styles.scss'
 
@@ -47,6 +47,7 @@ const experiences: ExperienceProps[] = [
       'Automated Testing using JUnit, Jest, Enzyme',
       'Deployed on AWS using Docker, Kubernetes, EKS Service',
     ],
+    picture: LogoSonrai,
   },
   {
     company: 'EY Canada',
@@ -68,6 +69,7 @@ const experiences: ExperienceProps[] = [
       'Automated testing using JUnit, Mocha, Chai, Enzyme, ChimpJS',
       'Worked with MySQL and Oracle databases',
     ],
+    picture: LogoEY,
   },
   {
     company: 'Ambir Solutions',
@@ -87,6 +89,7 @@ const experiences: ExperienceProps[] = [
       month: 'June',
       year: 2014,
     },
+    picture: LogoAmbir,
   },
   {
     company: 'Bell Aliant',
@@ -98,6 +101,7 @@ const experiences: ExperienceProps[] = [
       'Supported sales efforts by visiting clients and gathering requirements',
     ],
     dateRaw: `summers '10, '11, '12`,
+    picture: LogoAliant,
   },
 ]
 
