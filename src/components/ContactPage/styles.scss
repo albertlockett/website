@@ -30,9 +30,9 @@ $text-but-darker: #353535;
     margin-left: 8px;
 
     > .title {
-      font-family: $font-family-serif-header;
-      font-size: 84px;
-      text-transform: lowercase;
+      font-family: ltc-bodoni-175, serif;
+      font-size: 128px;
+      // text-transform: lowercase;
       font-weight: 300;
     }
 
@@ -40,7 +40,7 @@ $text-but-darker: #353535;
       position: relative;
       top: -16px;
       right: -2px;
-      font-family: $font-family-body;
+      font-family: ltc-bodoni-175, serif;
       font-weight: 100;
       font-size: 20px;
     }
@@ -50,6 +50,7 @@ $text-but-darker: #353535;
       grid-template-columns: auto auto auto auto;
       margin: 24px 0px;
       > .link {
+        display: ineline-block;
 
         > .label {
           font-family: $font-family-neue-haas;

@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react'
 import classnames from 'classnames'
 
-import homeImg from '../../../static/images/weird_triangles.png'
+import homeImg from '../../../static/images/me_quebec.png'
 
 import Navigation from '../Navigation'
 import './styles.scss'

@@ -1,6 +1,7 @@
 import React, { Fragment, ReactElement } from 'react'
 import classnames from 'classnames'
 
+import { Download } from 'react-feather'
 import Navigation from '../Navigation'
 import Experience, { ExperienceProps } from './Experience'
 import Skill from './Skill'
@@ -110,7 +111,14 @@ export default function CVPage(): ReactElement {
     <div className={classnames('page', 'cv-page')}>
       <div className={classnames('section', 'summary')}>
         <Navigation />
-        <div className="title">Albert Lockett</div>
+        <div className="title">
+          Albert Lockett
+          <span className="download-icon">
+            <a href="/albert-lockett-cv-may-2021.pdf" target="_blank">
+              <Download />
+            </a>
+          </span>
+        </div>
         <div className="summary-content">
           <div className="face-picture">
             <span>

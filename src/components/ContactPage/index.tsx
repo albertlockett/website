@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-
+import classnames from 'classnames'
 import Navigation from '../Navigation'
 
 import './styles.scss'
@@ -13,14 +13,14 @@ export default function ContactPage(): ReactElement {
         <div className="location">Montreal, QC</div>
         <div className="links">
           {/* email */}
-          <div className="link">
+          <div className={classnames('link', 'underline-fadein')}>
             <div className="label">Email</div>
             <div className="content">
               <a href="mailto:albert.lockett@gmail.com">albert.lockett@gmail.com</a>
             </div>
           </div>
           {/* linkedin */}
-          <div className="link">
+          <div className={classnames('link', 'underline-fadein')}>
             <div className="label">Connect</div>
             <div className="content">
               <a target="_blank" href="https://www.linkedin.com/in/albert-lockett-18770255/">
@@ -29,16 +29,16 @@ export default function ContactPage(): ReactElement {
             </div>
           </div>
           {/* code */}
-          <div className="link">
+          <div className={classnames('link', 'underline-fadein')}>
             <div className="label">portfolio</div>
             <div className="content">
-              <a target="_blank" href="https://github.com /albertlockett">
+              <a target="_blank" href="https://github.com/albertlockett">
                 github
               </a>
             </div>
           </div>
           {/* social */}
-          <div className="link">
+          <div className={classnames('link', 'underline-fadein')}>
             <div className="label">social</div>
             <div className="content">
               <a target="_blank" href="https://twitter.com/albertlockett">

@@ -21,6 +21,9 @@ export default function Navigation(): ReactElement {
         <Link to="/cv">cv</Link>
       </div>
       <div className={classnames('link', 'underline-fadein')}>
+        <Link to="/links">links</Link>
+      </div>
+      <div className={classnames('link', 'underline-fadein')}>
         <Link to="/contact">contact</Link>
       </div>
       <div className="control-icons" onClick={toggleOpen}>

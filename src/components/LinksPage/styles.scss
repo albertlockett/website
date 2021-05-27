@@ -1,0 +1,62 @@
+@import "../../assets/base-theme.scss";
+@import "../Navigation/styles.scss";
+
+.links-page {
+  .navigation {
+    @extend .navigation-default-desktop;
+    // background: #fffb01;
+    .link a {
+      background: #fffb01;
+      color: #FF3366;
+      padding: 0px 8px;
+    }
+  }
+  
+  width: 100vw;
+  height: 100vh;
+  
+
+  .title {
+    color: #FF3366;
+    font-family: ltc-bodoni-175, serif;
+    font-size: 195px;
+    font-style: italic;
+  }
+
+  .links {
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    background-color: #fffb01;
+
+    .father-link {
+      display: inline-block;
+      position: relative;
+      bottom: -8px;
+      width: 48%;
+      img {
+        max-height: calc(100vh - 200px);
+      }
+    }
+
+    .terry-link {
+      float: right;
+      text-align: right;
+      position: relative;
+      bottom: -8px;
+      width: 48%;
+      img {
+        max-height: calc(100vh - 200px);
+      }
+    }
+
+    .link {      
+      color: #FF3366;
+      font-family: ltc-bodoni-175, serif;
+      font-size: 80px;
+      position: absolute;
+      left: 40%;
+      top: 50%;
+    }
+  }
+}

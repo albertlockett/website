@@ -9,6 +9,7 @@ $section-gap: 48px;
 $dark-font: #333333;
 
 .cv-page {
+
   .section {
     margin-bottom: $section-gap;
     > .section-title {
@@ -55,6 +56,11 @@ $dark-font: #333333;
       font-family: $font-family-serif-header;
       font-size: 120px;
       text-transform: lowercase;
+
+      .download-icon {
+        margin-left: 20px;
+        cursor: pointer;
+      }
     }
   }
 
@@ -64,6 +70,10 @@ $dark-font: #333333;
     padding-bottom: 1px;
     margin-bottom: 18px;
     position: relative;
+
+    @media(max-width: 1200px) {
+      padding-top: 100px;
+    }
 
     > .section-title {
       position: absolute;
@@ -160,6 +170,10 @@ $dark-font: #333333;
     background-color: #B5FBBE;
     color: $dark-font;
     position: relative;
+
+    @media(max-width: 1200px) {
+      padding-top: 100px;
+    }
 
     .details {
       position: absolute;

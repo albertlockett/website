@@ -4,3 +4,6 @@ export { default as LogoAliant } from '../../../static/images/aliant_logo_drawn.
 export { default as LogoAmbir } from '../../../static/images/ambir_logo_drawn.png'
 export { default as LogoEY } from '../../../static/images/ey_logo_drawn.png'
 export { default as LogoSonrai } from '../../../static/images/sonrai-logo-drawn.png'
+export { default as TerrySelf } from '../../../static/images/terry_only.png'
+export { default as FatherSelf } from '../../../static/images/father_only.png'
+export { default as RJ45 } from '../../../static/images/rj45.png'

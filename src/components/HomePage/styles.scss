@@ -3,7 +3,7 @@
 
 $accent: #3A55D7;
 $background: #F1DACF;
-$body-color: #606060;
+$body-color: #808080;
 $body-width: 700px;
 
 .home-page {
@@ -21,16 +21,33 @@ $body-width: 700px;
 
     .body {
 
-      width: 700px;
+      width: 100%;
+      max-width: calc(100vw - 380px);
+      @media(max-width: $media-sm) {
+        width: 100%;
+        .title {
+          font-size: 100px;
+          position: relative;
+          z-index: 900;
+        }
+        
+      }
+      @media(min-width: $media-sm - 1) {
+        .title {
+          font-size: 250px;
+          line-height: 230px;
+        }
+      }
+
       .title {
-        color: $accent;
-        font-family: $font-family-serif-header;
+        color: white;
+        font-family: ltc-bodoni-175, serif;
         font-weight: $font-weight-serif-header;
-        font-size: $font-size-header-big;
         margin-bottom: -16px;
       }
 
       .message { 
+        max-width: 700px;
         color: $body-color;
         font-family: $font-family-body-big;
         font-size: $font-size-body-big;
@@ -39,15 +56,15 @@ $body-width: 700px;
     }
 
     .home-img {
-      position: absolute;
+      position: fixed;
+      z-index: 899;
       right: 0;
-      top: 125px;
-      width: 800px;
+      bottom: 0;
+      // width: 800px;
       max-width: calc(100vw - 700px);
-      height: 600px;
+      height: calc(100vh - 64px);
       overflow: hidden;
       img {
-        // width: 100%;
         height: 100%;
       }
     }
