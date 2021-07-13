@@ -25,7 +25,7 @@ export default function LinksPage(): ReactElement {
         </div>
         <div className={"terry-link"}>
           <img src={TerrySelf} />
-          <a className="link" href="http://lockett.ca">Terry</a>
+          <a className="link" href="http://terrylockett.ca">Terry</a>
         </div>
       </div>
     </div>
