@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react'
 
 import Navigation from '../Navigation'
-import { FatherSelf, TerrySelf RJ45 } from '../StaticImages'
+import { FatherSelf, TerrySelf, RJ45 } from '../StaticImages'
 
 import './styles.scss'
 
