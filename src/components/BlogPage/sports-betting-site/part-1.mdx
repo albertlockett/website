@@ -1,0 +1,176 @@
+# Sports Betting aka Getting Rich Quick
+
+Have you ever wanted to get rich quick and have fun doing it?
+Gambling, particularly betting on sports, is a fun and easy way to win tons of money.
+All you have to do is know which team will win the game and make a bet for that team.
+Repeat the process enough times, and eventually you'll be richer than your wildest dreams.
+
+There is a carch, which is that you do need to choose the winner for the plan to work.
+You also need to choose a good bet.
+You could bet me $1 million dollars that the Montreal Canadians will crush the Bruins, but it doens't mean doodley if they win and the payout is only $0.25.
+
+Choosing the winner can be a bit difficut, and there's a chance that despite our best effort we might choose a loser!
+Fortunately, we don't need to choose correctly every time.
+We only need to choose correctly enough times that that we win more money than we lose.
+
+The risk that we might lose our money by choosing the wrong team can be offset by choosing a bet with favorable odds.
+Take the example above in reverse - if I only had to bet $0.25 for Montreal to win, and my potential prize was $1 million dollars, I should take that bet!
+Montreal could be a dreadful team, and there's a very high risk I will lose my quarter.
+But the risk is offset by the ridiculous prize.
+
+## Expected Value
+
+> _"If someone gives you 10,000 to one odds on anything, you take it!" - Kevin_
+
+The interplay of  risk and reward can be readily understood by a term my stats textbook calls _expected value_. 
+
+> Let _X_ be a discrete random variable of possible values D and probabilty mass function (pmf) _p(x)_. 
+> The *expected value* of _X_ denoted _E(X)_.
+
+```javascript
+E(X) = sum(x * p(x)) where x belongs to D.
+```
+
+It's a fancy way of saying that the expected value is the weighted average of the payout D times the probability that the event with that payout will occur.
+
+For example, suppose that if I bet $1 that the Montreal Canadians will beat the Bruins, and there's a 55% chance that Montreal wins.
+If I chose correctly, I get my $1 returned to me and I win an additional $0.75, for a total payout of $1.75. 
+Obviously I will get nothing if I lose the bet.
+So my expected value is:
+
+```
+$1.75 * 55% + $0 * 45% = $0.9625
+```
+
+Is this a good bet?
+No, of course not!
+I paid $1 and I expect to receive $0.9625 in return.
+Even if we round that up to $0.97 I can still expect to lose $0.03 for my troubles.
+
+However, maybe someone else offered me the chance to recieve $2.25 if Montreal wins.
+
+```
+$2.25 * 0.55% + $0 * 0.45 = $1.2375
+```
+
+Wow, with these odds I expect to gain $1.2375 for my $1 bet, for a total gain of ~$0.24.
+Not bad!
+
+Should I bet my life savings on the Montreal Canadians in this case?
+Probably not.
+The expected value doesn't really tell us how much money we will win on an individual bet.
+It would be more accurate to say that this is how much we'd expect to win if we made this bet over and over again.
+
+```javascript
+function myPayoff() {
+  const winner = Math.random() < 0.55
+  if (winner) {
+    return 2.25
+  } else {
+     return 0
+  } 
+}
+
+let myMoney = 1
+function makeBet() {
+  myMoney = -1 + myPayoff()
+}
+makeBet()
+console.log(myMoney) // 0
+```
+
+Oof - biffed it and lost all my money.
+
+Now consider what would happen if we made that bet, for the next 10 million matchups of Montreal & Boston (assuming thatthe odds of each team winning or losing never changes).
+
+```
+const numGames = 10_000_000
+for (var i = 0; i < numGames; i++) {
+  makeBet()
+}
+console.log(myMoney())              // 2376575
+console.log(myMoney() / numGames)   // 0.2376575
+```
+
+Not bad - we're  millionaires! Also the real gain we made for each bet is approximately our expected value.
+
+All this to say that if we make bets with positive expected value, we might not win every bet but over time we can expect to increase our bankroll.
+
+## Data Sources & Some Terminology
+
+Now that we know how to calculate expected value to choose good bets and bad bets, the next logical questions are
+- How do we know the probability that one of the teams doing the sport will win? (e.g. _p(x)_)
+- How do we know what a given bet will pay out? (e.g. _x_)
+
+### Handicapping
+Attempting to calculate the probability that one time will win is called _handicapping_ in betters parlance.
+It's notoriously difficult. 
+Some would say impossible!
+Certainly, I personally am not smart enough to build these types of nice models.
+(If you are, feel free to follow along and substitute your own handicaping model smoehow).
+
+Luckily other smart people have done the legwork for us.
+One source for handicapping is fivethiryeight.com https://fivethirtyeight.com/ which publishes daily predictions of the probability outcomes of various sports matches.
+
+Here's a screenshot of what you can expect to see on their site:
+_TODO show a screenshot!!_
+
+### Books and Lines
+
+Who can you bet against?
+You could make bets with your pals, but if you decide to be a professional (or degenerate) gambler your friends might stop taking your calls, especially after you start taking all their money.
+
+Luckily there are professional websites who will gladly try to take your money.
+In betters parlance, these sites are called _Books_ (or Sportsbooks).
+For example betDSI.com is a great site.
+
+A book will give you some information about how much you can expect to earn based on some outcome.
+These are called odds or _lines_.
+There are various types of lines, but the ones that are based on which team wins the game are called _moneylines_.
+
+The payouts in lines can be offered in multiple formats. Two common formats are _Decimal_ and _American_
+
+Decimal odds a the simplest ot udnerstand. 
+They can be multiplied by the amount you paid to make the wager to determine how much you'll receive.
+For example, a decimal line of 1.77 means that for a $1.00 wager you will receive a payout of $1.77 for a total gain of $0.77.
+Remember - with a decimal the result includes you receiving the money you paid to make the wager.
+
+American odds are a bit more interesting.
+These odds are reported as a positive or negative number.
+If the number is positive, it represnets how much you would win if you wagered $100.
+For example, an American line of 125 means that you would win $125 for a $100 wager, for a total gain of $25.
+
+A negative American line represents how much you would have to pay to win 100. For example, -125 would mean that a $100 bet would pay $225.
+$125 reprenting the amount of the initial stake, plus $100 award for choosing the winner.
+
+## The Solution
+
+How can we use all this information to get rich quick?
+Well if we can collect the line information from our sports book, and use the values from our handicapping models, we can plug those into our expected value formula and find some good bets.
+
+Put in engineering terms, we will write
+- job to scrape lines from our sports book
+- job to scrape handicapping information from some publicly availably source
+- job to use the collected info to calculate the expected value for our bets
+- databae to store all the data we collect 
+- service to read values from our database
+- service to proxy API calls to our backent service
+- a beautiful UI that displays the data in a nice easy way
+
+Here's our architecture from an application perspective.
+
+Of course it's possible to just run the whole stack on your laptop.
+But ideally, we'd also want this thing running live on the internet. 
+That way, you can send the link to your site to your friends and family and you can all get rich together.
+Or you could show the site to a girl like and she'll think your cool and smart and want to date you.
+There's lots of good reasons to put your website on the internet.
+
+Anyway, to make it all happen we will:
+- use a new thing called Cloud (Google cloud)
+- run kubnernetes kubernetes in the cloud
+- create a container registery for k8s to pull images from
+- setup CI to build our images and push them to our container registery
+- set up an internet domain and load balancer to route traffic into our system
+- use terraform to make the whole deployment process easier
+
+

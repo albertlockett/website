@@ -1,0 +1,28 @@
+# Improving Performance of HashMap::contains
+
+> streams make everything better
+
+Methods to check if a data structure contains an element, in any programming language, abound.
+
+According to computer _scientists_, not all have the same performance charactaristics (allegedly).
+Their _big brains_ debate which is the best, and their theoretical models fill the pages of _expensive textbooks_.
+But sometimes, the smartest ideas come from the _smoothest_ brains ...
+
+Last week a spirited debate errupted amongst friends.
+The topic: the efficacy of Javascript's `in` operator.
+The example:
+```
+if (Cool_Key in x) {
+```
+
+My brother, a professional Java EE regex developer, got Java and JS mixed up and suggested this an alternative syntax:
+```
+if (map.keySet().stream().anyMatch(i -> i.equals("Cool_Key")) ){
+```
+
+Several iterations later led us to what is possibly (read probably) the best performing version of this optimization.
+```
+if (new ForkJoinPool(Long.MAX).submit(() -> map.keySet().stream().parallel().anyMatch(i -> i.equals("Cool_Key")))){
+```
+
+In this important contribution the scientific lexicon, we'll determine if and why this truely is the smartest way to replace `java.util.HashMap`'s infamous `contains` method.

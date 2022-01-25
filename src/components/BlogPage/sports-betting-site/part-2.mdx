@@ -1,0 +1,238 @@
+# Data Collectors
+
+We'll start off writing our data collectors.
+These will be relatively simple pieces of code that scrape some line information from our sportsbook as well as handicapping info from some publicly available source.
+
+We'll write our scrapers in golang.
+Of course if you're following along at home, feel free to use whichever language you want you want.
+But I like golang.
+I think it's an easy language to learn, the syntax makes the code look nice and readable, we get the benetifs of static typing, and it produces small binaries.
+
+Go ahead and create a new golang module now:
+```shell
+TODO how is this done?
+```
+
+Our scrapers will make API calls out to the internet and store the information in the database.
+
+Before we get started - let's think about how we want to lay out our project.
+I'm thinking we'll have a module for each scraper,
+ a common module for database access (dao),
+ and a common module for models.
+We'll also have a main module.
+
+```
+main.go
+handicap/
+book/
+dao/
+model/
+# some files are omitted
+```
+
+## Models
+
+A good data model is the difference between being a cool guy who drives a Ferrari 275 GTS and a nerd who rides a scooter.
+Anyway, I think a data model like this makes sense.
+
+```golang
+const SIDE_HOME = "home"
+const SIDE_AWAY = "away"
+const LINE_TYPE_MONEYLINE = "moneyline"
+
+type Event struct {
+  HomeTeam string
+  AwayTeam string
+  Time     time.Time
+}
+
+type Handicap struct {
+  Event
+  TimeCollected   time.Time
+  LatestCollected bool
+  Odds            float64
+  Side            string
+  Source          string
+}
+
+type Line struct {
+  Event
+  TimeCollected   time.Time
+  LatestCollected bool
+  LineAmerican    int32
+  LineDecimal     float64
+  Side            string
+  Source          string
+  Type            string
+}
+```
+
+Few interesting notes here 
+- Event is the descriptor of an individual game.
+- We're storing at least two handicap records for each event (one for each side)
+- We're doing the same thing with the Lines, two records
+- Side is some kind of special string
+
+## Fetching Handicaps
+
+We'll start off fetching handicaps as that is a relatively easier prospect.
+I said in Part 1 that there are publicly available sources for this information made my real smart experts, including the afabale fivethrityeight.com.
+This is what we'll use for our source.
+
+Figuring out how to download their data as a CSV was relatively easy. 
+I went to the NBA predictions page and pressed Cmd+F in my browser and searched for Download.
+That let me to this page with all the publicly available data
+- https://data.fivethirtyeight.com/#nba-forecasts
+
+The Info link beside NHL takes us here
+- https://github.com/fivethirtyeight/data/tree/master/nhl-forecasts
+
+Which has a link to the latest NHL forecasts
+- https://projects.fivethirtyeight.com/nhl-api/nhl_elo_latest.csv
+
+This is what we'll use for our project.
+If you're following along and NHL isn't in season, just choose a better sport like baseball.
+
+Alright so let's get to coding.
+Create some file and call it whatever stupid thing you want
+```shell
+touch handicap/collector.go
+```
+
+Now let's add some code.
+First we'll write two functions.
+
+First will download the CSV from the internet and parse it.
+Luckily go has some funky utils in the standord library for this stuff.
+```go
+import (
+  "encoding/csv"
+  "net/http"
+)
+
+const FILE_URL = "https://projects.fivethirtyeight.com/mlb-api/mlb_elo_latest.csv"
+const SOURCE = "fivethirtyeight.com"
+
+func readFromCsv() ([][]string, error) {
+  resp, err := http.Get(FILE_URL)
+  if err != nil {
+    return nil, err
+  }
+
+  defer resp.Body.Close()
+  reader := csv.NewReader(resp.Body)
+  reader.Comma = ','
+  data, err := reader.ReadAll()
+  if err != nil {
+    return nil, err
+  }
+
+  return data, nil
+}
+```
+
+Now we'll write something to take the output of the first function and marshall it into our model
+```golang
+import (
+  "strconv"
+  "time"
+  "github.com/albertlockett/sports-betting/sources/model"
+)
+
+func unmarshalCsvData(data [][]string) ([]*model.Handicap, error) {
+  layout := "2006-01-02"
+  now := time.Now()
+  today := now.Format(layout)
+
+  results := make([]*model.Handicap, 0)
+  for i, row := range(data) {
+    if i == 0 {
+      continue // skip header
+    }
+
+    // only return todays games
+    timeRaw := row[0]
+    if timeRaw != today {
+      continue
+    }
+
+    gameTime, err := time.Parse(layout, timeRaw)
+    if err != nil {
+      return nil, err
+    }
+
+    event := model.Event{
+      HomeTeam: row[4],
+      AwayTeam: row[5],
+      Time: gameTime,
+    }
+
+    homeOdds, err := strconv.ParseFloat(row[8], 64)
+    if err != nil {
+      return nil, err
+    }
+    awayOdds, err := strconv.ParseFloat(row[9], 64)
+    if err != nil {
+      return nil, err
+    }
+
+    results = append(results, &model.Handicap{
+      Event: event,
+      Source: SOURCE,
+      LatestCollected: true,
+      TimeCollected: now,
+      Odds: homeOdds,
+      Side: model.SIDE_HOME,
+    })
+    results = append(results, &model.Handicap{
+      Event: event,
+      Source: SOURCE,
+      LatestCollected: true,
+      TimeCollected: now,
+      Odds: awayOdds,
+      Side: model.SIDE_AWAY,
+    })
+  }
+
+  return results, nil
+}
+```
+
+Finally, we'll write some function to call them both in sequence and return the results
+
+```golang
+func FetchHandicaps() ([]*model.Handicap, error) {
+  data, err := readFromCsv()
+  if err != nil {
+    return nil, err
+  }
+
+  results, err := unmarshalCsvData(data)
+  if err != nil {
+    return nil, err
+  }
+
+  return results, nil
+}
+```
+
+Now let's add something to our stupid main function and it'll print out the crap.
+In `main.go` add
+
+```golang
+func main() {
+  fetchHandicaps()
+}
+
+func fetchHandicaps() {
+  handicaps, err := fivethirtyeight.FetchEvents()
+  if err != nil {
+    panic(err)
+  }
+  log.Println(fmt.Sprintf("There were %d events", len(handicaps)/2))
+
+  for _, handicap := range handicaps {
+    log.Println(fmt.Sprintf("%v", handicap))
+  }
+}
+```
