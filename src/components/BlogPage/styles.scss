@@ -28,16 +28,17 @@
   }
 
   p {
-    // font-family: ocr-a-std;
-    // font-weight: 400;
-    // font-style: normal;
     font-family: $font-family-calson;
     font-size: 1.4rem;
     width: 55%;
   }
 
+  pre {
+    width: 55%;
+  }
+
   code {
-    font-family: ocr-a-std;
+    font-family: lft-etica-mono;
     color: darkblue;
   }
 

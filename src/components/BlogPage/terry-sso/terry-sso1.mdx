@@ -1,94 +1,101 @@
-Notes:
-https://auth0.com/blog/json-web-token-signing-algorithms-overview/
-
+import Code from '../../Code'
 
 # Login
 
-There's one important thing that all respectable popular big tech companies have:
-the "login with <the site\>" button.
+There's one important thing that all popular big tech companies have:
+the "login with _X_" button.
 Google, Facbook, Github, Twitter.. the list goes on.
 Navigate your web browser to to some podunk internet startup's app page, 
-  and 9 times out of 10 they'll let you register and authenticate from some big fancy site.
+  and 9 times out of 10 they'll let you register and authenticate from 
+  with the identity from some real, respectable, tech company.
 
-Speaking of popular internet sites - https://terrylockett.ca was created in 2011. 
-The site offers it's three monthly visitors a cornicopia of content & featurs,
+On the topic of respectable, https://terrylockett.ca is a website founded in 2011. 
+At the time of this writing, it has just celebrated it's 10th birthday of being on the internet.
+The site offers it's visitors a cornicopia of content & features,
   including a W3C certification, a picture of a cat, two gifs of snoop dogg, 
   and a variety of flash based videos.
 
-In an effort to stay modern and respectable, https://terrylockett.ca will now also support
-  a universal login flow.
-But unlike those big fancy sites from California, we're going to show you how it's done for real.
+In an effort to stay modern and cool, https://terrylockett.ca will now also support
+  provide authentication solution for 3rd party sites.
+The "login with terrylockett.ca" button will soon be all over the internet.
+More importantly, the engineering team is going to show you exactly how it's done.
 
-Hold onto your butts and prepare to have your mind blown out of your skull.
+Hold onto your butts and prepare to have your minds blown out of your skull.
 
 ## Background
 
-If you don't know anything at all, 
+There's basically three API calls that will be made as part of the flow,
+  we'll start by setting up our endpoints:
 
-
-## The SDK
-
-We're going to need something to call the APIs we'll eventually build.
-Of course, we could leave it up to our users to call our APIs directly and certainly they'll have that option.
-But we can also make life easier for them by creating a library to handle it all for them.
-
-If you're following along at home, now is the time to set up a Javascript or Typescript project that will build a library.
-If you need help doing this, here are some helpful resources:
-- https://khalilstemmler.com/blogs/typescript/node-starter-project/
-- https://khalilstemmler.com/blogs/typescript/eslint-for-typescript/
-- https://khalilstemmler.com/blogs/tooling/prettier/
-- https://parceljs.org/getting-started/library/
-
-First thing we'll do is make a shell of an API,
-  e.g. some function that the user will call in their code to begin the login flow.
-We'll add a function to generate the verifier, which remember is a cryptographically random value.
-Then we'll write some helper functions to generate the challenge from the verifier,
-  which remember is a base64 encoding of the SHA256 hash of the verifier.
-
-This also gives us a chance to use some of the fancy new browser crypto APIs
-https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-
-```javascript
-/**
- * do the login
- */
-export async function doLogin() {
-  const verifier = new Verifier();
-
-  // eventually this function will call our APIs.
-  // for now it just logs some stuff
-  console.log(verifier);
-  console.log(`${verifier}`);
-  console.log(await verifier.getChallenge());
+<Code language="rust">
+{`#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+  let server = HttpServer::new(|| {
+    let cors = Cors::permissive();
+    App::new()
+      .wrap(cors)
+      .route("/oauth2/authorize", web::get().to(redir_to_login))
+      .route("/oauth2/login", web::post().to(handle_login))
+      .route("/oauth2/token", web::post().to(handle_token))
+  });
+   
+  server.bind("127.0.0.1:4000")
+    .expect("error binding server")
+    .run()
+    .await
 }
+`}
+</Code>
 
-/**
- * our implementation of the code verifier
- */
-export class Verifier {
+
+## Phase one
+
+This is the phase where we begin the login flow.
+In this phase we
+- create a verifier
+- create a challenge from the verifier
+- begin a login session with the API
+- redirect the browser to the login screen
+
+The very first step of the flow is to create the _verifier_.
+Recal that the function of the verifier (along with the code), will be exchanged for a token in Phase Three.
+Its form is _a cryptographically random value_,
+  which sounds spooky,
+  but it's effectively a bunch of random bytes.
+
+The from the verifier, we generate the _challenge_.
+The challenge_type (is that what it's called?) can take two different forms, None or S256 (TODO confirm this).
+If the challenge type is S256, the challenge is the base64, encoding of the SHA256 hash of the verifier
+  (for challenge type none, it's just the base64 encoding).
+
+The _verifier_ and _challenge_ are both generated on the client.
+Here's what the code to do this could look like.
+In the getChallenge method,
+  we're hashing the verifier before we encode it which means we're using the S256 challenge type.
+It uses the fancy new browser _crypto_ api.
+
+<Code language="typescript">
+{`export class Verifier {
   constructor() {
     this.array = new Uint8Array(64);
     window.crypto.getRandomValues(this.array);
     this.getChallenge = this.getChallenge.bind(this);
   }
-
+  
   async getChallenge(): string {
     return toBase64(await sha256(this.array));
   }
-
-  // add the tostring for nice debugging
+  
   toString() {
     return toBase64(this.array);
   }
 }
-
-// helper functions below ...
-
+  
 async function sha256(bytes: Uint8Array): Uint8Array {
   const hash = await crypto.subtle.digest('SHA-256', bytes);
   return new Uint8Array(hash);
 }
-
+  
 function toBase64(bytes: Uint8Array): string {
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
@@ -96,144 +103,47 @@ function toBase64(bytes: Uint8Array): string {
   }
   return window.btoa(binary);
 }
-```
+`}
+</Code>
 
-## The API
+Once we have a verifier and challenge,
+  we gotta get prepared to do some stuff.
+We'll need to store the verifier for use in phase three, so that will go into a cookie.
 
-Now that there's a function that could call our API, we need an API to call. 
-I'm going to write the server in Rust.
-Rust is a programming language that touts itself as fast and secure and is used by nerds all over the world.
 
-```shell
-cargo init server
-```
+Then we'll send the challenge down to the API server.
+When we do that, we'll get redirected to the login page for the beginning of phase two.
 
-Add actix webserver as well as the associated cors middleware as a dependency in `Cargo.toml` 
-```
-[dependencies]
-actix-cors = "0.5.4"
-actix-web = "3"
-```
+There's a few other things we might want to send to the API Server when we do this.
+Recall that after phase two,
+  we'll get redirected back to the original application before doing phase three.
+But, we won't be re-visiting the original application in the interim,
+  which means that if the app knows where step two should return to,
+  it's gotta send that info along.
+All this to say, we gotta send the callback URL.
 
-Create the shell of an API by adding the following code.
+There's other funky stuff you could send as well to possibly control the token we eventually receive.
+Maybe when you implement this flow for your website,
+  you want the token you eventually recieve to have certain scopes,
+  or maybe an audience claim.
+I'm going to omit all that for now,
+  but this would be the place to send them along.
 
-A few interesting notes
-- because our application server is not the same thing hosting our
-  html site, requests will be going cross origin. 
-  There are some restrictions about the headers a CORS request can
-  read if using the fetch API (`location` is not allowed), so
-  we'll let our users fetch this endpoint instead.
-```
-use actix_cors::Cors;
-use actix_web::{web, App, HttpResponse, HttpServer};
+Anyway, the code to start this flow from the browser looks like this:
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-  let server = HttpServer::new(|| {
-    let cors = Cors::permissive();
-    App::new()
-      .wrap(cors)
-      .route("/oauth2/authorize", web::get().to(redir_to_login))
-  });
-
-  server.bind("127.0.0.1:4000")
-    .expect("error binding server")
-    .run()
-    .await
-}
-
-fn redir_to_login() -> HttpResponse {
-  HttpResponse::Found()
-    .header("Location", "http://login.terrylockett.ca")
-    .finish()
-}
-```
-_design note: if you were doing this for real, you might want to consider deifning a more restrictive cross origin policy_
-
-Now back in our front-end SDK, let's call that API endpoint.
-Change the implementaiton of doLogin to this
-```
-export async function doLogin() {
+<Code language="typescript">
+{`type LoginParams = {
+  callbackUrl: string;
+};
+  
+export async function doLogin(params: LoginParams) {
+  // store the verifier in the cookie for later use.
+  // It expires in 5 minutes, hopefully it doesn't take that long for users to type their password etc.
   const verifier = new Verifier();
-  // TODO - do something with verifier
-
-  window.location = 'http://localhost:4000/oauth2/authorize';
+  document.cookie = \`terry_auth=\${verifier}; \${new Date(new Date().getTime() + 300_000)}; path=/\`;
+  
+  const challenge = await verifier.getChallenge();
+  window.location = \`http://localhost:4000/oauth2/authorize?challenge=\${challenge}&callback_url=\${params.callbackUrl}\`; 
 }
-```
-
-If you're following along at home, now might be the time to create a simple test site to try out
-  the login flow.
-Create a little web page:
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Test Site</title>
-    <script type="module" src="./src/index.ts"></script>
-  </head>
-  <body>
-    <h1>Some Website</h1>
-    <button id="login">Login with terrylockett.ca</button>
-  </body>
-</html>
-```
-
-And the associated Javascript:
-```javascript
-
-// import our SDK
-import * as sdk from '../../front-end-sdk/dist/main';
-
-const button = document.getElementById('login');
-button.addEventListener(
-  'click',
-  function () {
-    // when the user clicks the button, do the SDK login
-    sdk.doLogin();
-  },
-  false
-);
-```
-
-## The Login page
-
-If you recall from the login flow description, after the user posts to our authorize endpoint
-  we redirect them to some web application that takes them through an authentication process.
-We'll now build that application.
-It's a pretty basic app, just a simple web form.
-
-Also, remember the app flow above. 
-When the user is redirected to the login application, they'll post their credentials back to our api.
-But the API will need some additional context about the user's session and where they need to go next.
-The redirect sends that info the user
-
-```javascript
-function App() {
-  return (
-    <div className="login-page">
-      <h1>Login</h1>
-      <form method="post" action="http://localhost:4000/oauth2/login">
-        <label>username</label>
-        <input type="text" name="username" />
-        <br />
-        <label>password</label>
-        <input type="password" name="password" />
-        <br />
-        <button>OK</button>
-      </form>
-    </div>
-  );
-}
-```
-
-Assuming that when we run this app, it'll run on localhost port 1234.
-Then we'll change the implementation in `redit_to_login`
-```
-fn redir_to_login() -> HttpResponse {
-  HttpResponse::Found()
-    .header("Location", "http://localhost:1234")
-    .finish()
-}
-```
-
-With that in place, we should be redirected to the login screen.
+`}
+</Code>

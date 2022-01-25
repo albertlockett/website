@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react'
 import classnames from 'classnames'
 import { useLocation, Link, Switch, Route } from 'react-router-dom'
 
+
 import IneffJavaHashSet from './innefective-java/set-contains.mdx'
 import SportsBettingIntro from './sports-betting-site/intro.mdx'
 import SportsBettingPart1 from './sports-betting-site/part-1.mdx'
@@ -17,9 +18,7 @@ export default function BlogPage(props): ReactElement {
   return (
     <div>
       <div>
-        <Link to="/articles/sports-betting/intro">Intro</Link>
-        <Link to="/articles/sports-betting/part-1"> Part 1</Link>
-        <Link to="/articles/sports-betting/part-2"> Part 2</Link>
+        <Link to="/articles/terry-sso/terry-sso1">Terry SSO (WIP)</Link>
       </div>
       <div className={classnames('article')}>
         <Switch>
@@ -35,7 +34,7 @@ export default function BlogPage(props): ReactElement {
           <Route path="/articles/sports-betting/part-2">
             <SportsBettingPart2 />
           </Route>
-          <Route path="/articles/terry-sso/terr-sso1">
+          <Route path="/articles/terry-sso/terry-sso1">
             <TerrySSO1 />
           </Route>
         </Switch>
