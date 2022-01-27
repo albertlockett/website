@@ -1,13 +1,44 @@
 import Code from '../../Code'
+import FullFlow from './full_flow.png'
 
-# Login
+# _Sign in with terrylockett.ca_
+
+## A Hands-on Approach to Understanding OAuth 2.1 PKCE Flow
+
+Many web developers use some form of OAuth to authenticate users of their site.
+The implementation details are abstracted away,
+  so a thorough understanding of what OAuth is and how it works is not necessary in an engineer's day to day work.
+For some, years of productive web development can take place with a blissful understanding that 
+  OAuth does not need to be understood.
+And why bother, isn't auth something best left to the _real_ professionals?
+Well maybe your curious and want to learn more,
+  or maybe your architect got fed up with your 3rd party auth provider not meeting it's SLA
+  and said you need to roll your own implementation.
+
+For those want/need to learn more about OAuth, informative aritcles abound.
+But many of these articles describe OAuth and its variant for single page web applications (SPA), the PKCE flow, 
+  in the abstract or at a relatively high level.
+They sometimes lack information that could be used to glean an understanding of how the 
+  system that executes the flow is actually built.
+
+Some software engineers are more comfortable reasoning about systems from the bottom-up.
+To this cohort, the implementation defines the architecture, not the other way around.
+Their creedo, "_just show me the code_". This post attempts to do that.
+
+I'll be describing the an example implementation of this authorization flow
+  that I built as a fun project for my brother's website.
+If you're a software engineer who has struggled to understand how OAuth2 works in your SPA,
+  I hope that this post is useful to you.
+
+the full code for this solution can be found at https://github.com/albertlockett/terry-sso
+
+## The Use-Case
 
 There's one important thing that all popular big tech companies have:
-the "login with _X_" button.
-Google, Facbook, Github, Twitter.. the list goes on.
+the "login with ..." button.
+Google, Facbook, Github, Twitter, etc.
 Navigate your web browser to to some podunk internet startup's app page, 
-  and 9 times out of 10 they'll let you register and authenticate from 
-  with the identity from some real, respectable, tech company.
+  and often they'll let you register and authenticate from with the identity from some real, respectable, tech company.
 
 On the topic of respectable, https://terrylockett.ca is a website founded in 2011. 
 At the time of this writing, it has just celebrated it's 10th birthday of being on the internet.
@@ -15,14 +46,62 @@ The site offers it's visitors a cornicopia of content & features,
   including a W3C certification, a picture of a cat, two gifs of snoop dogg, 
   and a variety of flash based videos.
 
-In an effort to stay modern and cool, https://terrylockett.ca will now also support
+In an effort to keep up with the big dogs, https://terrylockett.ca will now also support
   provide authentication solution for 3rd party sites.
 The "login with terrylockett.ca" button will soon be all over the internet.
 More importantly, the engineering team is going to show you exactly how it's done.
-
-Hold onto your butts and prepare to have your minds blown out of your skull.
+Strap yourself in and prepare to have your mind blown out of your skull.
 
 ## Background
+
+Web developers who put the the "login with terrylocket.ca" on their site effectively want to delegate
+  the responsibility to terrylockett.ca of confirming the user is who they say they is.
+Making this determination is called _authentication_.
+terrylockett.ca has a great, functional, login page that follows all the best security practices an 
+  application that does authentication.
+In order delegate authentication, the user on some website somehow need to navigate to terrylockett.ca, login,
+  and then have the results of that login returned to the original site.
+
+_OAuth_ is the term the industry uses for this kind of workflow.
+Sometimes people will use the term "OAuth 2" or "OAuth 2.0" when discussing this flow,
+  to specify that they not talking about OAuth version 1,
+  which is less secure and fell out of favor about around 2013.
+
+### The Flow
+
+Generally, an OAuth 2 flow goes like this:
+- 1 - The browser starts the flow by sending a request to a 3rd party site that will handle the authentication
+  - As part of this request, it will tell the 3rd party where to send the results in the form of a callback URL
+- 2 - The requests ends up with the user being on the 3rd party app's login screen. 
+  The user enters their credentials and clicks login. 
+  This is also where you might see some kind of multi factor authentication,
+  or possibly the user already had a session with the 3rd party and doesn't need to enter their creds again.
+  Possibilities about, but regardless the 3rd party authenticates the user.
+- 3 - The 3rd party uses the callback url supplied in step 1 to redirect the user back to the original site with a _code_,
+  or possibly an error if the user biffed it and couldnt log in right.
+  - the original app will probably exchange this code for a _token_
+
+```
+TODO - put a pic here of this happening
+```
+
+### Tokens
+
+Once the original app receives a successful code, 
+  generally the _code_ is exchanged for a _token_.
+e.g, the original site makes a request to the 3rd party with the code, and receives a token in the response.
+Often this token takes two forms, 
+  and access tokena and/or id token.
+It's common for the code to be exchanged for both at the same time.
+It's also common for each of these tokens to take the form of a signed _JWT token_ (aka a _JSON Web Token_).
+
+```
+TODO finish the rest of this section
+```
+
+The full flow ...
+
+<img src={FullFlow} />
 
 There's basically three API calls that will be made as part of the flow,
   we'll start by setting up our endpoints:
@@ -52,8 +131,8 @@ async fn main() -> std::io::Result<()> {
 
 This is the phase where we begin the login flow.
 In this phase we
-- create a verifier
-- create a challenge from the verifier
+- create a _verifier_
+- create a _challenge_ from the verifier
 - begin a login session with the API
 - redirect the browser to the login screen
 
@@ -144,6 +223,121 @@ export async function doLogin(params: LoginParams) {
   
   const challenge = await verifier.getChallenge();
   window.location = \`http://localhost:4000/oauth2/authorize?challenge=\${challenge}&callback_url=\${params.callbackUrl}\`; 
+}
+`}
+</Code>
+
+If we publish the code to call work through thi flow as an SDK,
+  here's how some developer might use the SDK on their site to begin the login flow.
+
+<Code language="javascript">
+{`import * as sdk from 'terry-spa-sdk';
+  
+const button = document.getElementById('login');
+button.addEventListener(
+  'click',
+  function () {
+    sdk.doLogin({
+      callbackUrl: ` + "`${window.location.origin}/callback`" + `
+    });
+  },
+  false
+);
+`}
+</Code>
+
+## Phase Two:
+
+Here's the front-end of our login application
+<Code language="typescript">
+{`
+import React from 'react';
+import ReactDOM from 'react-dom';
+  
+import './styles.scss';
+  
+function App() {
+  const params = new URLSearchParams(window.location.search);
+  const challenge = params.get('challenge');
+  const callbackUrl = params.get('callbackUrl');
+  return (
+    <div className="login-page">
+      <h1>Login</h1>
+      <form method="post" action="http://localhost:4000/oauth2/login">
+        <label>username</label>
+        <input type="text" name="username" />
+        <br />
+        <label>password</label>
+        <input type="password" name="password" />
+        <br />
+        <input type="hidden" name="challenge" value={challenge} />
+        <input type="hidden" name="callback_url" value={callbackUrl} />
+        <button>OK</button>
+      </form>
+    </div>
+  );
+}
+  
+ReactDOM.render(<App />, document.getElementById('app'));
+`}
+</Code>
+
+No respectable web developer would put his site on the internet without some _style_:
+<Code language="sass">
+{`
+body {
+  margin: 0;
+  top: 0;
+  background: lightblue;
+}
+`}
+</Code>
+
+Here's the code the handles the response when the user clicks _OK_
+<Code language="rust">
+{`
+#[derive(Debug, Deserialize)]
+pub struct PasswordFormValues {
+  username: String,
+  password: String,
+  challenge: String,
+  callback_url: String,
+}
+  
+async fn handle_login(params: web::Form::<PasswordFormValues>) -> HttpResponse {
+  
+  if !is_valid_password(&params).await {
+    let location = format!(
+      "http://localhost:1234?challenge={}&callbackUrl={}&error={}", 
+      params.challenge,
+      params.callback_url,
+      "invalid_credentials"
+    );
+    return HttpResponse::Found()
+      .header("Location", location)
+      .finish()
+  }
+    
+  let code = format!("{}", Uuid::new_v4());
+  dao::store_code(&code, &params.username, &params.challenge).await;
+  HttpResponse::Found()
+    .header("Location", format!("{}?code={}", params.callback_url.clone(), code))
+    .finish()
+}
+  
+/// check that the user supplied valid credentials
+/// don't do like this irl - it's not a very smart way to check creds
+async fn is_valid_password(params: &web::Form::<PasswordFormValues>) -> bool {
+  let valid_credentials: bool;
+  let password = dao::get_password(&params.username).await;
+  println!("{:?}", password);
+  
+  if matches!(password, None) {
+    valid_credentials = false; // no user found
+  } else {
+    valid_credentials = params.password == password.unwrap();
+  }
+  return valid_credentials;
 }
 `}
 </Code>

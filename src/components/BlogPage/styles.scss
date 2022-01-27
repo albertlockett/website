@@ -2,6 +2,7 @@
 
 .article {
   padding-left: 12.5%;
+  @media only screen and (max-width: 1024px) { padding-left: 5% }
   width: 100%;
   
   blockquote {
@@ -10,31 +11,40 @@
 
   h1 {
     font-family: ltc-bodoni-175, serif;
-    
     font-size: 3rem;
     font-weight: 100;
+    width: 90%;
   }
   
   h2 {
     font-family: ltc-bodoni-175, serif;
     font-size: 2rem;
     font-weight: 100;
+    width: 90%;
   }
 
   h3 {
     font-family: ltc-bodoni-175, serif;
     font-size: 1.75rem;
     font-weight: 100;
+    width: 90%;
+  }
+
+  ul {
+    width: 55%;
+    @media only screen and (max-width: 1024px) { width: 90%; }
   }
 
   p {
     font-family: $font-family-calson;
     font-size: 1.4rem;
     width: 55%;
+    @media only screen and (max-width: 1024px) { width: 90%; }
   }
 
   pre {
     width: 55%;
+    @media only screen and (max-width: 1024px) { width: 90%; }
   }
 
   code {

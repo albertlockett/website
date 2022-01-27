@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react'
 import classnames from 'classnames'
 import { useLocation, Link, Switch, Route } from 'react-router-dom'
 
-
 import IneffJavaHashSet from './innefective-java/set-contains.mdx'
 import SportsBettingIntro from './sports-betting-site/intro.mdx'
 import SportsBettingPart1 from './sports-betting-site/part-1.mdx'
@@ -13,8 +12,8 @@ import './styles.scss'
 
 export default function BlogPage(props): ReactElement {
   const location = useLocation()
-  console.log({ props })
-  console.log({ location })
+
+  console.log('hello!')
   return (
     <div>
       <div>
