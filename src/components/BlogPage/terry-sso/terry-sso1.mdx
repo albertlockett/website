@@ -3,36 +3,44 @@ import FullFlow from './full_flow.png'
 
 # _Sign in with terrylockett.ca_
 
-## A Hands-on Approach to Understanding OAuth 2.1 PKCE Flow
+## A Hands-on Approach to Understanding OAuth 2.0 PKCE Flow
 
-Many web developers use some form of OAuth to authenticate users of their site.
-The implementation details are abstracted away,
-  so a thorough understanding of what OAuth is and how it works is not necessary in an engineer's day to day work.
+Many web developers use some form of OAuth to authenticate users of their site,
+  although some may not even know it.
+The implementation details are often abstracted away,
+  behind the APIs and SDKs of some Saas auth provider like Okta or Auth0.
+Through this abstraction thorough understanding of what OAuth is and how it works is usually
+  not necessary in an engineer's daily work.
 For some, years of productive web development can take place with a blissful understanding that 
   OAuth does not need to be understood.
-And why bother, isn't auth something best left to the _real_ professionals?
-Well maybe your curious and want to learn more,
-  or maybe your architect got fed up with your 3rd party auth provider not meeting it's SLA
-  and said you need to roll your own implementation.
+And why bother - isn't auth something best left to the _real_ professionals?
 
-For those want/need to learn more about OAuth, informative aritcles abound.
-But many of these articles describe OAuth and its variant for single page web applications (SPA), the PKCE flow, 
-  in the abstract or at a relatively high level.
+Maybe you're curious and want to learn more.
+  Maybe you're interfacing with some 3rd party that does not have such a simple SDK, 
+  or maybe you even need to roll your own implementation.
+
+Informative aritcles abound the unitiated who want/need to learn more about OAuth,
+  but many of these articles describe OAuth in the abstract or at a relatively high level.
 They sometimes lack information that could be used to glean an understanding of how the 
   system that executes the flow is actually built.
 
 Some software engineers are more comfortable reasoning about systems from the bottom-up.
 To this cohort, the implementation defines the architecture, not the other way around.
-Their creedo, "_just show me the code_". This post attempts to do that.
+Their creedo: "_just show me the code_". This post attempts to do that.
 
-I'll be describing the an example implementation of this authorization flow
-  that I built as a fun project for my brother's website.
-If you're a software engineer who has struggled to understand how OAuth2 works in your SPA,
+I'll be describing an example implementation of this OAuth 2 PKCE authorization flow.
+If you're a software engineer who has struggled to understand how this flow works in your SPA,
   I hope that this post is useful to you.
 
-the full code for this solution can be found at https://github.com/albertlockett/terry-sso
+This article assumes no prior knowlege of OAuth.
+Many articles describing PKCE, the modern way that single page web applications (SPAs) use OAuth,
+  often assume a prior knowlege of the older, less secure Implicit Grant flow,
+  but not this one.
+That said, an basical understanding of web development and HTTP would be helpful.
 
-## The Use-Case
+The full code for this solution can be found at https://github.com/albertlockett/terry-sso
+
+## The Use-Case (or _a gift to my brother_)
 
 There's one important thing that all popular big tech companies have:
 the "login with ..." button.
@@ -40,16 +48,17 @@ Google, Facbook, Github, Twitter, etc.
 Navigate your web browser to to some podunk internet startup's app page, 
   and often they'll let you register and authenticate from with the identity from some real, respectable, tech company.
 
-On the topic of respectable, https://terrylockett.ca is a website founded in 2011. 
-At the time of this writing, it has just celebrated it's 10th birthday of being on the internet.
-The site offers it's visitors a cornicopia of content & features,
+On the topic of respectable tech companies... 
+  https://terrylockett.ca is a website founded by my brother in 2011. 
+At the time of this writing, it has just celebrated it's 10th birthday of being on the internet!
+The site offers its visitors a cornicopia of content & features,
   including a W3C certification, a picture of a cat, two gifs of snoop dogg, 
   and a variety of flash based videos.
 
 In an effort to keep up with the big dogs, https://terrylockett.ca will now also support
   provide authentication solution for 3rd party sites.
 The "login with terrylockett.ca" button will soon be all over the internet.
-More importantly, the engineering team is going to show you exactly how it's done.
+More importantly, the engineering team behind this feature is going to show you exactly how it's done.
 Strap yourself in and prepare to have your mind blown out of your skull.
 
 ## Background
@@ -57,8 +66,7 @@ Strap yourself in and prepare to have your mind blown out of your skull.
 Web developers who put the the "login with terrylocket.ca" on their site effectively want to delegate
   the responsibility to terrylockett.ca of confirming the user is who they say they is.
 Making this determination is called _authentication_.
-terrylockett.ca has a great, functional, login page that follows all the best security practices an 
-  application that does authentication.
+terrylockett.ca has a great, functional, login page that follows all the best security practices.
 In order delegate authentication, the user on some website somehow need to navigate to terrylockett.ca, login,
   and then have the results of that login returned to the original site.
 
@@ -67,19 +75,16 @@ Sometimes people will use the term "OAuth 2" or "OAuth 2.0" when discussing this
   to specify that they not talking about OAuth version 1,
   which is less secure and fell out of favor about around 2013.
 
-### The Flow
+### The Simplified Flow
 
-Generally, an OAuth 2 flow goes like this:
+A simplified OAuth flow goes like this:
 - 1 - The browser starts the flow by sending a request to a 3rd party site that will handle the authentication
-  - As part of this request, it will tell the 3rd party where to send the results in the form of a callback URL
+  As part of this request, it will tell the 3rd party where to send the results in the form of a callback URL
 - 2 - The requests ends up with the user being on the 3rd party app's login screen. 
   The user enters their credentials and clicks login. 
-  This is also where you might see some kind of multi factor authentication,
-  or possibly the user already had a session with the 3rd party and doesn't need to enter their creds again.
-  Possibilities about, but regardless the 3rd party authenticates the user.
-- 3 - The 3rd party uses the callback url supplied in step 1 to redirect the user back to the original site with a _code_,
-  or possibly an error if the user biffed it and couldnt log in right.
-  - the original app will probably exchange this code for a _token_
+  On a successful login, the browser gets redirected back with a _token_
+
+The flow is called the _Implicit Grant_ flow and for a long time it was the only option.
 
 ```
 TODO - put a pic here of this happening
@@ -87,21 +92,117 @@ TODO - put a pic here of this happening
 
 ### Tokens
 
-Once the original app receives a successful code, 
-  generally the _code_ is exchanged for a _token_.
-e.g, the original site makes a request to the 3rd party with the code, and receives a token in the response.
-Often this token takes two forms, 
-  and access tokena and/or id token.
-It's common for the code to be exchanged for both at the same time.
-It's also common for each of these tokens to take the form of a signed _JWT token_ (aka a _JSON Web Token_).
+The end-goal of the OAuth flow is to receive the token.
+
+
+Note - the JWT format will be explained more detail in a later section.
+For now it's more than enough to know that commonly these tokens to take the form of a signed 
+  _JWT token_ (aka a _JSON Web Token_).
+It's basically base64 encoded json with a special signature that can be used to verify the token's authenticity.
+
+The token can be used by your application to  determine who the user is (i.e. the user's _identity_).
+There's often extra information included with the token about what the user is allowed to do
+  and what APIs they are allowed to use (i.e. their _access_).
+Since the token serves this dual purpose, 
+  it is often customary for this final stage of the flow to actually return two different tokens:
+  an _access token_ and an _id token).
 
 ```
-TODO finish the rest of this section
+TODO section here about scopes, etc?
 ```
 
-The full flow ...
+```
+TODO section here about openID connect
+```
+
+### The Problem with Implicit Grant
+
+What could go wrong with the authorization flow we described above?
+The main security issue is that there are ways that token can be intercepted. 
+The way Implicit Grant is generally implemented,
+  after user sucessfully authenticates the authentication server sends an HTTP 302 response with
+  to the callback URL, including the token in the url
+```
+302 
+Location=https://example.com?token=<token>
+```
+This will cause the browser will then make an HTTP GET request as it navigates to that location.
+In this scenario, its possible the token will be stored in the browser history or that an 
+  attacker could intercept the token from the URL during the GET request.
+
+Of course it would be more secure if the browser could somehow request the token ater being redirected
+  after the login using some kind of asynchronous request.
+Why don't we do this in implicit grant flow?
+The whole reason the token was supplied in the URL as part of this flow is because, at the time
+  it was designed, CORS was not widely supported.
+e.g., the mechanism did not exist at the time.
+Luckily in modern times the limitation does not exist.
+CORS is now widely supported and we're free to make asynchronous requests to the authorization server
+  to our hearts' content (or until we get repsonse code 429).
+
+```
+TODO add a section here about front channels and back channels
+```
+
+### PKCE - Securing the Token Exchange
+
+What if implicit grant was enhanced to send back a special _code_ on the front channel 
+  (in the redirect URL) that could be exchanged for a token on the back channel 
+  (in an aysnchronous post request).
+Would that work?
+
+It could help a bit, but it doesnt fully solve the problem.
+That code could be intercepted just as easily as the token in implicit grant.
+
+If only there was some special secret that the client knew a head of time that it could send with the code on the back channel.
+The authorization server could then verify that that the secret is correct and associated with the code.
+E.g. the client could send the verification secret to prove that it is one who is really allowed to exchange the code for the token.
+
+We're describing here is something called the _Authorization Grant_ flow.
+The problem with this flow in the context of a single page web app is that the browser needs to know the secret somehow.
+If we embed the secret in the javascript or HTML of the web page
+  the secret is effectively public!
+Anyone with the ability to inspect the site's static asets could steal it and then it would
+  provide no protection of the code/token exchange.
+But what if there wasn't one static secret?
+We could generate the secret dynamically in our JavaScript code...
+
+The trick here is that the authorization server would need to be able to check that the client supplied the
+  correct secret as part of the code exchange.
+To do this we could supply the hash of the secret to the authorization server ahead of time.
+To verify the secret which is supplied during the exchange, 
+  we hash it and then compare it to the hash previously supplied.
+```
+TODO add a link to learn more about hashing?
+```
+
+What we're now describing is an extension to the Authorization Grant flow called Proof Key Code Exchange (or PKCE or "pixy").
+In PKCE parlance, the secret is called a _verifier_ and the hash of that secret is called the _challenge_.
+```
+TODO add a picture?
+```
+
+In this flow, when the user makes the original request to the authorization server,
+  in order to begin the authorization flow,
+  it supplies all the reular parameters (audience, scope, callback url) _and the challenge_.
+The flow then proceeds exactly like an authorization grant flow:
+  user logs in and then gets redirected back to the callback url with the code.
+The browser then sends the request to exchang the code _and the verifier_ for the token.
+
+## Implementation
+
+With all that background out of the way,
+  here's the real flow in all it's gory detail.
+
+If you skipped ahead to this part of the article because you saw a pretty picture,
+  feel free to just start reading here if you'd like. 
+You can refer to the front-matter as reference.
+The rest of this article is going to show the code that implements the flow in the
+  diagram below.
 
 <img src={FullFlow} />
+
+I've broken the flow into three phases.
 
 There's basically three API calls that will be made as part of the flow,
   we'll start by setting up our endpoints:
@@ -283,7 +384,7 @@ ReactDOM.render(<App />, document.getElementById('app'));
 </Code>
 
 No respectable web developer would put his site on the internet without some _style_:
-<Code language="sass">
+<Code language="css">
 {`
 body {
   margin: 0;
@@ -341,3 +442,10 @@ async fn is_valid_password(params: &web::Form::<PasswordFormValues>) -> bool {
 }
 `}
 </Code>
+
+
+## Bibliography / Further Reading
+- [_PKCE: What and Why?_ ](https://dropbox.tech/developers/pkce--what-and-why-#:~:text=%E2%80%9CPKCE%20(RFC%207636)%20is,to%20access%20their%20Dropbox%20data.)
+- [OAuth.net Impllicit Grant Page](https://oauth.net/2/grant-types/implicit/)
+  including a great [youtube video](https://www.youtube.com/watch?v=CHzERullHe8) about why you should prefer PKCE
+- [The original Oauth2 spec for PKCE] (https://oauth.net/2/pkce/)
