@@ -349,9 +349,34 @@ button.addEventListener(
 
 ## Phase Two:
 
-test this is a change made from the editor
+In the previous step, the user began the login flow by creating some login state 
+  and then had their browser redirected to the login page of terrylockett.ca
+For our implementation, we'll use a simple html form to accept the user's username
+  and password.
+In reality these applications could be quite a bit more interesting.
+Features on such an application could include MFA or 
+  not having the user re-authenticate if they already
+  have an active session with the autentication provider.
 
-Here's the front-end of our login application
+We're going to keep it simple.
+A Simple web form for username and password will do.
+
+Recall that in the previous phase we sent several parameters to the authentication server
+  describing what kind of token the user wishes to receive
+  and where they wish to be redirected back to after a successful login.
+When the user submits the form,
+  we'll need to somehow retrieve those parameters.
+Hence, we also submit the _session_id_, which is just some id that can be used to
+  retrive the other parameters later on.
+This concept of a session ID is more of an implementation detail than anything else,
+  i.e, it's not necessaily part of the Oauth spec.
+
+```
+TODO, need to talk about the error handling here as well.
+TODO, refactor the backend of part 1 to return the session id
+```
+
+Here's the front-end of our login application.
 <Code language="typescript">
 {`
 import React from 'react';
@@ -361,8 +386,7 @@ import './styles.scss';
   
 function App() {
   const params = new URLSearchParams(window.location.search);
-  const challenge = params.get('challenge');
-  const callbackUrl = params.get('callbackUrl');
+  const sessionId = params.get('sessionId');
   return (
     <div className="login-page">
       <h1>Login</h1>
@@ -373,8 +397,7 @@ function App() {
         <label>password</label>
         <input type="password" name="password" />
         <br />
-        <input type="hidden" name="challenge" value={challenge} />
-        <input type="hidden" name="callback_url" value={callbackUrl} />
+        <input type="hidden" name="sessionId" value={sessionId} />
         <button>OK</button>
       </form>
     </div>
@@ -396,7 +419,28 @@ body {
 `}
 </Code>
 
-Here's the code the handles the response when the user clicks _OK_
+Here's the code the handles the response when the user clicks _OK_ to submit their credentials.
+The purpose of this handler is to eventually generare a code that can be exchanged for a token
+  and then send a response that will redircet the browser back to the callback url.
+But that only happens if the request was successful. 
+
+Before we can do that, we need to perform some checks:
+- check if the session ID is valid (not some garbage input)
+- check that the username and password are correct (aka _authenticate_ the user)
+- check that this user is allowed to create the type of token they are attempting to create
+
+The third check is really an application specific detail,
+  but I added it here to show where this kind of business logic could be built into 
+  an Oauth flow implementation.
+For example, maybe in the original request the user requested a scope of `deleteAllRepositories`
+  with an audience of `my-source-control-system.example.com`.
+Probably only admin users are allowed to do something like this, so in this case we'd deny the
+  request.
+
+In each case, we'll also want to handle the failed check differently.
+
+If the user sends an invalid session ID, 
+
 <Code language="rust">
 {`
 #[derive(Debug, Deserialize)]
