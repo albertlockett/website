@@ -290,7 +290,6 @@ Once we have a verifier and challenge,
   we gotta get prepared to do some stuff.
 We'll need to store the verifier for use in phase three, so that will go into a cookie.
 
-
 Then we'll send the challenge down to the API server.
 When we do that, we'll get redirected to the login page for the beginning of phase two.
 
@@ -306,10 +305,37 @@ There's other funky stuff you could send as well to possibly control the token w
 Maybe when you implement this flow for your website,
   you want the token you eventually recieve to have certain scopes,
   or maybe an audience claim.
-I'm going to omit all that for now,
-  but this would be the place to send them along.
+Recall that the scopes could be used to determine what a user is really allowed to do.
+The audience claim could be used determine which APIs the user has access to.
 
-Anyway, the code to start this flow from the browser looks like this:
+All the parameters we send (challenge, callback_url, scopes and audience),
+  will be stored in a special session object.
+We'll redirect the user to the login screen with a reference to the unique identifier
+  of the session.
+
+<Code language="rust">
+{`
+#[derive(Debug, Deserialize)]
+pub struct AuthorizeParams {
+    challenge: String,
+    callback_url: String,
+    // TODO add scopes and audience
+}
+     
+async fn redir_to_login(req: HttpRequest) -> HttpResponse {
+    let params = web::Query::<AuthorizeParams>::from_query(req.query_string()).unwrap();
+  
+    let session_id = Uuid::new_v4().to_string();
+    dao::store_session(&session_id, &params.challenge, &params.callback_url).await;
+    let redirect_location = format!("http://localhost:1234?session_id={}", session_id,);
+    HttpResponse::Found()
+        .header("Location", redirect_location)
+        .finish()
+}
+`}
+</Code>
+
+Thhe code to start this flow from the browser looks like this:
 
 <Code language="typescript">
 {`type LoginParams = {
@@ -347,41 +373,6 @@ button.addEventListener(
 `}
 </Code>
 
-```
-TODO add something about here being where we're redirected and something
-about how the session is setup
-```
-```
-TODO something about session and the challenge format
-```
-
-<Code language="rust">
-{`
-#[derive(Debug, Deserialize)]
-pub struct AuthorizeParams {
-    challenge: String,
-    callback_url: String,
-}
-  
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Session {
-    pub challenge: String,
-    pub callback_url: String,
-}
-    
-async fn redir_to_login(req: HttpRequest) -> HttpResponse {
-    let params = web::Query::<AuthorizeParams>::from_query(req.query_string()).unwrap();
-  
-    let session_id = Uuid::new_v4().to_string();
-    dao::store_session(&session_id, &params.challenge, &params.callback_url).await;
-    let redirect_location = format!("http://localhost:1234?session_id={}", session_id,);
-    HttpResponse::Found()
-        .header("Location", redirect_location)
-        .finish()
-}
-`}
-</Code>
-
 ## Phase Two:
 
 In the previous step, the user began the login flow by creating some login state 
@@ -396,21 +387,6 @@ Features on such an application could include MFA or
 We're going to keep it simple.
 A Simple web form for username and password will do.
 
-Recall that in the previous phase we sent several parameters to the authentication server
-  describing what kind of token the user wishes to receive
-  and where they wish to be redirected back to after a successful login.
-When the user submits the form,
-  we'll need to somehow retrieve those parameters.
-Hence, we also submit the _session_id_, which is just some id that can be used to
-  retrive the other parameters later on.
-This concept of a session ID is more of an implementation detail than anything else,
-  i.e, it's not necessaily part of the Oauth spec.
-
-```
-TODO, need to talk about the error handling here as well.
-TODO, refactor the backend of part 1 to return the session id
-```
-
 Here's the front-end of our login application.
 <Code language="typescript">
 {`
@@ -422,6 +398,7 @@ import './styles.scss';
 function App() {
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('sessionId');
+  const error = params.get('error')
   return (
     <div className="login-page">
       <h1>Login</h1>
@@ -432,8 +409,10 @@ function App() {
         <label>password</label>
         <input type="password" name="password" />
         <br />
-        <input type="hidden" name="sessionId" value={sessionId} />
+        <input type="hidden" name="session_id" value={sessionId} />
         <button>OK</button>
+        <br />
+        <Error error={error} />
       </form>
     </div>
   );
@@ -443,7 +422,19 @@ ReactDOM.render(<App />, document.getElementById('app'));
 `}
 </Code>
 
-No respectable web developer would put his site on the internet without some _style_:
+Recall that in the previous phase we sent several parameters to the authentication server
+  describing what kind of token the user wishes to receive
+  and where they wish to be redirected back to after a successful login.
+When the user submits the form,
+  we'll need to somehow retrieve those parameters.
+Hence, we also submit the _session_id, which is just some id that can be used to
+  retrive the other parameters later on.
+This concept of a session ID is more of an implementation detail than anything else,
+  i.e, it's not necessaily part of the Oauth spec.
+
+There's also an error component here which will handle the error states described below.
+
+Finally, no respectable web developer would put his site on the internet without some _style_:
 <Code language="css">
 {`
 body {
@@ -474,16 +465,39 @@ Probably only admin users are allowed to do something like this, so in this case
 
 In each case, we'll also want to handle the failed check differently.
 
-If the user sends an invalid session ID, 
+If the user sends an invalid session ID,
+  we'll have ot keep them on the login screen but send them a message that something
+  invalid has happened.
+There's no other option - we couldn't redirect them back to the original app
+  because the callback url a session attribute and the session we can't find.
+To do this, we'll 302 the user to the login page and add the querystring parameter
+  `?error=invalid_session`
+
+Similarly, if the user enters invalid credentials,
+  we'll keep them on the login screen
+In this case however we want to show a different error -
+  namely that the credentials they entered were not correct.
+
+When we do authenticate the user, now we can check that they're allowed to be issued
+  the token they have asked for when they initiated the session.
+In this case, it was the original application that made the request to initiate the
+  session, so we'll want to let that application know that what they sent was invalid.
+This means, we'll 302 back to the original application via the callback url, 
+  and we'll also return an error code in the query string.
+  `?error=not_allowed_scopes` or `?error=not_allowed_audience`
+
+Finally, if we haven't hit any of our edge cases we'll create a new code,
+  store the some state that associates the code, the user and the session,
+  and return the code to the original application by adding it to the query string
+  in the redirect to the callback url.
 
 <Code language="rust">
 {`
 #[derive(Debug, Deserialize)]
 pub struct PasswordFormValues {
-  username: String,
-  password: String,
-  challenge: String,
-  callback_url: String,
+    username: String,
+    password: String,
+    session_id: String,
 }
   
 async fn handle_login(params: web::Form::<PasswordFormValues>) -> HttpResponse {
@@ -506,6 +520,9 @@ async fn handle_login(params: web::Form::<PasswordFormValues>) -> HttpResponse {
         );
         return HttpResponse::Found().header("Location", location).finish();
     }
+
+    // TODO need to handle the business logic around not allowed scopes
+    // and audiences here`
 
     // store the code and redirect user w/ code
     let code = format!("{}", Uuid::new_v4());
@@ -533,6 +550,41 @@ async fn is_valid_password(params: &web::Form::<PasswordFormValues>) -> bool {
 `}
 </Code>
 
+Here's how our first two error messages are handled in the browser.
+<Code language="typescript">
+{`
+import React from 'react';
+  
+type ErrorProps = {
+  error: string;
+};
+  
+const errorMessages = {
+  invalid_credentials: 'Your password and/or username is wrong!!!!!!',
+  invalid_session: 'Invalid session state!!!!!!!!!!!'
+};
+  
+export default function Error(props: ErrorProps) {
+  if (!props.error) {
+    return null;
+  }
+  
+  return (
+    <div className="error">
+      <b>Error happen:</b>
+      <br />
+      <em>{errorMessages[props.error]}</em>
+    </div>
+  );
+}
+`}
+</Code>
+
+```
+TODO need to handle the final error state in the front-end
+```
+
+TODO continue on to write about the token exchange
 
 ## Bibliography / Further Reading
 - [_PKCE: What and Why?_ ](https://dropbox.tech/developers/pkce--what-and-why-#:~:text=%E2%80%9CPKCE%20(RFC%207636)%20is,to%20access%20their%20Dropbox%20data.)
