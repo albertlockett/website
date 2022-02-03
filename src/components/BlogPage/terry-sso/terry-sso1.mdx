@@ -347,6 +347,41 @@ button.addEventListener(
 `}
 </Code>
 
+```
+TODO add something about here being where we're redirected and something
+about how the session is setup
+```
+```
+TODO something about session and the challenge format
+```
+
+<Code language="rust">
+{`
+#[derive(Debug, Deserialize)]
+pub struct AuthorizeParams {
+    challenge: String,
+    callback_url: String,
+}
+  
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Session {
+    pub challenge: String,
+    pub callback_url: String,
+}
+    
+async fn redir_to_login(req: HttpRequest) -> HttpResponse {
+    let params = web::Query::<AuthorizeParams>::from_query(req.query_string()).unwrap();
+  
+    let session_id = Uuid::new_v4().to_string();
+    dao::store_session(&session_id, &params.challenge, &params.callback_url).await;
+    let redirect_location = format!("http://localhost:1234?session_id={}", session_id,);
+    HttpResponse::Found()
+        .header("Location", redirect_location)
+        .finish()
+}
+`}
+</Code>
+
 ## Phase Two:
 
 In the previous step, the user began the login flow by creating some login state 
@@ -452,24 +487,33 @@ pub struct PasswordFormValues {
 }
   
 async fn handle_login(params: web::Form::<PasswordFormValues>) -> HttpResponse {
-  
-  if !is_valid_password(&params).await {
-    let location = format!(
-      "http://localhost:1234?challenge={}&callbackUrl={}&error={}", 
-      params.challenge,
-      params.callback_url,
-      "invalid_credentials"
-    );
-    return HttpResponse::Found()
-      .header("Location", location)
-      .finish()
-  }
-    
-  let code = format!("{}", Uuid::new_v4());
-  dao::store_code(&code, &params.username, &params.challenge).await;
-  HttpResponse::Found()
-    .header("Location", format!("{}?code={}", params.callback_url.clone(), code))
-    .finish()
+     // check if the session is valid
+    let session_op = dao::get_session(&params.session_id).await;
+    if session_op.is_none() {
+        let location = format!(
+            "http://localhost:1234?session_id={}&error={}",
+            params.session_id, "invalid_session"
+        );
+        return HttpResponse::Found().header("Location", location).finish();
+    }
+    let session = session_op.unwrap();
+
+    // check if the password is valid ...
+    if !is_valid_password(&params).await {
+        let location = format!(
+            "http://localhost:1234?session_id={}&error={}",
+            params.session_id, "invalid_credentials"
+        );
+        return HttpResponse::Found().header("Location", location).finish();
+    }
+
+    // store the code and redirect user w/ code
+    let code = format!("{}", Uuid::new_v4());
+    dao::store_code(&code, &params.username, &params.session_id).await;
+    let callback_url = format!("{}?code={}", session.callback_url.clone(), code);
+    HttpResponse::Found()
+        .header("Location", callback_url)
+        .finish()
 }
   
 /// check that the user supplied valid credentials
