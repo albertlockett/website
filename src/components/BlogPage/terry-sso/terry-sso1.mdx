@@ -692,6 +692,123 @@ async function handleError(error) {
 </Code>
 
 
+What's interesting here that the token is recevied,
+  so it behoovs to talk about what is the token and what it represents
+As metioned eariler the token is used in a dual sense to validate whow the user is 
+  and what they are allowed to do.
+Also was mentioned, it more/less takes the form of base64 encoded JSON.
+I sat "more/less" because it really has some additional structure
+
+```
+TODO put a picture here of the real format or something
+```
+
+The header and payload are base64 encoded json
+  separated by a '.' character.
+The payload is really what contains the content
+  of the token.
+The header contains some metadata about the token
+  such as information about what signing algorithm
+  was used for the signature.
+
+Speaking of the signature, what is that?
+Well, considering the simple format of the token
+  it is coneivable that someone could easily
+  just spoof a token.
+We need to add something to it that can make it
+  so the client can know it's a valid token.
+We could add some kind of ID and the validator (Server)
+  could call back to our auth service to chcek,
+  but then we'd DDOS our auth service depending on what
+  kind of fucked thing our users did w/ their token.
+Luckily this is a solved problem,
+  we use the signature.
+
+Signing the token is a confusing as fuck topic
+  but luckily there's a good book on it.
+If you learn nothing else,
+  here's the rundown...
+
+Basically the signure is this:
+```
+signature = base64(signingAlg(`${header}.${payload}`))
+```
+
+There are different versions of the signing
+  alorithm that are best to use depending on the
+  use case.
+
+The most common signing algorithm is HS256,
+  aka HMAC  + SHA256 which is a symmetric signing
+  algorithm.
+It uses a secret, which the token profider (the
+  authorization servier) must know to sign the
+  token AND the validate (your API) must know to
+  the token.
+This is the most common signing algorithm and often
+  when you're signing up with some api that does
+  oauth they'll be providing you with a client ID/
+  secret pair, where the secret in that pair is what
+  is used in the HMAC algorithm to sign the token.
+
+I'm not interested in managing client ID / secrets
+  for this project but luckily there's another
+  algorithm that suits the use case.
+RS256 aka RSA + SHA256 is an asymettic signing 
+  algortithm where the private key is used to
+  sign the token and anyone with the public key
+  can verify it's authenticity.
+
+So that's what we'll be using here.
+I'll create a super secret private key
+  and have the authorization server be
+  using that for signing the keys.
+And I'll mkae the public key publicly available
+  for validating the token.
+
+Whatever signing algorithm you choose,
+  there's going to be some business logic around
+  things like
+  making hte secrets available to api consumers for
+  hmac or roating key pairs for RS256.
+
+Also, I understand that we're straying a bit from
+  information on oauth and I debated whether to 
+  even include the previous section.
+But I figured that - what use is writing all this
+  shit about oauth if no one knew what to do with
+  the output or why they're able to do it.
+
+Anyway, the code to do all this signing and funky shit
+  is confusing as hell so it's best to use a blirary for it.
+Here's how the code looks to create the token using the excellent
+  jwt_simple crate.
+
+```
+TODO add the code here
+```
+
+finally, presumably the client that consumes this
+  token could send it down to the api you're
+  trying to add auth to as part of a header
+```
+// TODO make this look like fetch
+Auhorization: Bearer ${token}
+```
+
+here's a presumptive check on how you'd
+  go about verifying the token
+
+```
+TODO add something here
+```
+
+## Conclusion
+
+Something about a dog's breakfast
+
+
+
 ## Bibliography / Further Reading
 - [_PKCE: What and Why?_ ](https://dropbox.tech/developers/pkce--what-and-why-#:~:text=%E2%80%9CPKCE%20(RFC%207636)%20is,to%20access%20their%20Dropbox%20data.)
 - [OAuth.net Impllicit Grant Page](https://oauth.net/2/grant-types/implicit/)
