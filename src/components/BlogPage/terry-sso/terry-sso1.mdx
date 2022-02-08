@@ -691,20 +691,66 @@ async function handleError(error) {
 `}
 </Code>
 
+And here's the backend code that would handle that reuqest:
+
+<Code language="rust">
+{`
+async fn handle_token(params: web::Json<TokenFormValues>) -> HttpResponse {
+    let code_op = dao::get_code(&params.code).await;
+    if code_op.is_none() {
+        return HttpResponse::BadRequest()
+            .header("content-type", "application/json")
+            .body("{\"error\": \"invalid_code\"}");
+    }
+    let code = code_op.unwrap();
+  
+    let session_id = code.session_id;
+    let session_op = dao::get_session(&session_id).await;
+    if session_op.is_none() {
+        return HttpResponse::BadRequest()
+            .header("content-type", "application/json")
+            .body("{\"error\": \"invalid_state\"}");
+    }
+    let session = session_op.unwrap();
+  
+    let challenge = session.challenge;
+    if !is_valid_verifier(&params.verifier, &challenge) {
+        return HttpResponse::BadRequest()
+            .header("content-type", "application/json")
+            .body("{\"error\": \"invalid_verifier\"}");
+    }
+  
+    let access_token = token::generate_token(&code.user, &session.audience, &session.scopes);
+    HttpResponse::Ok()
+        .header("content-type", "application/json")
+        .body(format!("{{\"access_token\": \"{}\"}}", access_token))
+}
+  `}
+</Code>
+
 
 What's interesting here that the token is recevied,
   so it behoovs to talk about what is the token and what it represents
 As metioned eariler the token is used in a dual sense to validate whow the user is 
   and what they are allowed to do.
-Also was mentioned, it more/less takes the form of base64 encoded JSON.
-I sat "more/less" because it really has some additional structure
 
+First, let's talk about the token format.
+As was mentioned, it more/less takes the form of base64 encoded JSON.
 ```
-TODO put a picture here of the real format or something
+$ node -e '
+    const payload = { sub: `albertlockett` };
+    console.log(JSON.stringify(payload))
+' | base64
+# eyJzdWIiOiJhbGJlcnRsb2NrZXR0In0K
 ```
 
-The header and payload are base64 encoded json
-  separated by a '.' character.
+I say "more/less" because it really has some additional structure - 
+3 segements separated by the '.' character:
+```
+<header>.<payload>.<signature>
+```
+
+The header and payload are base64 encoded json.
 The payload is really what contains the content
   of the token.
 The header contains some metadata about the token
@@ -724,14 +770,14 @@ We could add some kind of ID and the validator (Server)
 Luckily this is a solved problem,
   we use the signature.
 
-Signing the token is a confusing as fuck topic
-  but luckily there's a good book on it.
-If you learn nothing else,
-  here's the rundown...
+Signing the token (and JWT token mechanics in general) is a relatively
+  broad topic, but luckily there's a good book on it.
+  https://auth0.com/resources/ebooks/jwt-handbook
 
-Basically the signure is this:
+
+Here is a basic rundown:
 ```
-signature = base64(signingAlg(`${header}.${payload}`))
+signature = base64(signingAlgorithm(`${header}.${payload}`))
 ```
 
 There are different versions of the signing
@@ -745,7 +791,12 @@ It uses a secret, which the token profider (the
   authorization servier) must know to sign the
   token AND the validate (your API) must know to
   the token.
-This is the most common signing algorithm and often
+It's called symmetric because anyone who knows the secret
+  could create and sign tokens - 
+  e.g., because the API that validates the token knows the
+  secret, it could theoretically also create and sign it's
+  own tokens.
+HS256 is the most common signing algorithm and often
   when you're signing up with some api that does
   oauth they'll be providing you with a client ID/
   secret pair, where the secret in that pair is what
@@ -754,7 +805,7 @@ This is the most common signing algorithm and often
 I'm not interested in managing client ID / secrets
   for this project but luckily there's another
   algorithm that suits the use case.
-RS256 aka RSA + SHA256 is an asymettic signing 
+RS256 aka RSA + SHA256 is an asymetric signing 
   algortithm where the private key is used to
   sign the token and anyone with the public key
   can verify it's authenticity.
@@ -776,32 +827,110 @@ Also, I understand that we're straying a bit from
   information on oauth and I debated whether to 
   even include the previous section.
 But I figured that - what use is writing all this
-  shit about oauth if no one knew what to do with
+  stuff about oauth if no one knew what to do with
   the output or why they're able to do it.
+This whole section has really a cursory introduction to JWTs
+  and to get a more thorough overview, consult the book liked above.
 
-Anyway, the code to do all this signing and funky shit
-  is confusing as hell so it's best to use a blirary for it.
+Anyway, the code to do all this signing and funky stuff
+  is tricky to get right but luckily there are some good open source
+  libraries that can take care of it for us.
 Here's how the code looks to create the token using the excellent
   jwt_simple crate.
 
-```
-TODO add the code here
-```
+<Code language="rust">
+{`
+use jwt_simple::prelude::*;
+  
+#[derive(Serialize, Deserialize)]
+struct CustomClaims {
+    scopes: String,
+}
+  
+pub fn generate_token(subject: &str, audience: &str, scopes: &str) -> String {  
+    // variable 'PEM' is the private key as a &str
+    let key_pair = RS256KeyPair::from_pem(PEM).unwrap();
+  
+    let exp = Duration::from_millis(30 * 60 * 1000);
+    let custom_claims = CustomClaims {
+        scopes: String::from(scopes),
+    };
+    let token = key_pair
+        .sign(
+            Claims::with_custom_claims(custom_claims, exp)
+                .with_subject(subject)
+                .with_audience(audience)
+                .with_issuer("terrylockett.ca"),
+        )
+        .unwrap();
+    return token;
+}
+`}
+</Code>
 
 finally, presumably the client that consumes this
   token could send it down to the api you're
   trying to add auth to as part of a header
-```
-// TODO make this look like fetch
-Auhorization: Bearer ${token}
-```
+
+<Code language="javascript">
+{`const button = document.getElementById('button');
+button.addEventListener(
+  'click',
+  async function () {
+    const res = await fetch('http://localhost:4001/v1/data', {
+      mode: 'cors',
+      headers: {
+        Authorization: \`Bearer \${token}\`
+      }
+    });
+    const text = await res.text();
+    console.log(text);
+  },
+  false
+);
+`}
+</Code>
 
 here's a presumptive check on how you'd
   go about verifying the token
-
-```
-TODO add something here
-```
+<Code language="javascript">
+{`
+const express = require('express');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+ 
+const app = express();
+app.use(cors());
+ 
+const publicKey = \`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8f/E4EJRrr8jgn1qRJLb
+rJjpFKuc0haRb9HFpc5fJeBq2xfJpu5gnuKsFInt5vNJL1Zho17VCg0LYC3XzCHU
+ywlQfjMkzA1BrSrDD58yx4eWwSlIyR6r9dikJYJm6Ho5c4+wCKga+2YFrgBZp9BK
+UHHCWbi8otE+rdPL/8K+mxnqt/R4Pm2QvFBRrJ433m5nZx024Fr9DMP59Sl0QjOC
+fxzWr33Juyr5nURUxl0IcSg/BjPqQN4j8qTeADLB/BEQVvfJuBc1dy0IpOIhnrkM
+9Gk0GfCePKYvFCHn90yROZvriukcFMFaNQtbNkEHr2Uh4VVDYI/8FgHGSWqPr49J
+GwIDAQAB
+-----END PUBLIC KEY-----\`;
+ 
+app.get('/v1/data', function(req, res) {
+  const authHeader = req.get('Authorization');
+  const token = authHeader.split(' ')[1];
+ 
+  try {
+    jwt.verify(token, publicKey);
+    res.status(200);
+    res.json({ data: 'OK' })
+  } catch (e) {
+    res.status(403);
+    res.json({ error: 'unauthorized' })
+  }
+});
+ 
+app.listen(4001, function() {
+  console.log('listening on port 4001');
+});
+`}
+</Code>
 
 ## Conclusion
 

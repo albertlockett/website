@@ -1,4 +1,39 @@
 @import "../../assets/base-theme.scss";
+@import "../Navigation/styles.scss";
+
+$body-color: black;
+$accent: black;
+
+.articles-page {
+  .navigation {
+    @extend .navigation-default-desktop;
+    .link a {
+      color: $body-color;
+      text-decoration-color: $accent !important;
+    }
+  }
+}
+
+.article-nav {
+  font-family: $font-family-serif-header;
+  font-weight: 200;
+  font-size: 32px;
+
+  .link {
+    text-decoration-color: $accent !important;
+    a {
+      text-decoration: none;
+      text-decoration-color: black !important;
+      &:hover {
+        text-decoration-thickness: 1px !important;
+      }
+    }
+  }
+}
+
+.articles-navigation {
+
+}
 
 .article {
   padding-left: 12.5%;
