@@ -18,7 +18,7 @@ export default function Navigation(): ReactElement {
         <Link to="/">home</Link>
       </div>
       <div className={classnames('link', 'underline-fadein')}>
-        <Link to="/articles">articles (wip)</Link>
+        <Link to="/articles">writing</Link>
       </div>
       <div className={classnames('link', 'underline-fadein')}>
         <Link to="/cv">cv</Link>

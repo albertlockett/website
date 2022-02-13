@@ -3,6 +3,7 @@
 
 $body-color: black;
 $accent: black;
+$narrow-cutoff: 1280px;
 
 .articles-page {
   .navigation {
@@ -10,6 +11,15 @@ $accent: black;
     .link a {
       color: $body-color;
       text-decoration-color: $accent !important;
+    }
+  }
+
+  .blog-home {
+
+    .page-description {
+      font-family: $font-family-calson;
+      font-size: 22px;
+      margin-bottom: 24px;
     }
   }
 }
@@ -22,6 +32,7 @@ $accent: black;
   .link {
     text-decoration-color: $accent !important;
     a {
+      font-family: ltc-bodoni-175, serif;
       text-decoration: none;
       text-decoration-color: black !important;
       &:hover {
@@ -37,7 +48,7 @@ $accent: black;
 
 .article {
   padding-left: 12.5%;
-  @media only screen and (max-width: 1024px) { padding-left: 5% }
+  @media only screen and (max-width: $narrow-cutoff) { padding-left: 5% }
   width: 100%;
   
   blockquote {
@@ -67,19 +78,22 @@ $accent: black;
 
   ul {
     width: 55%;
-    @media only screen and (max-width: 1024px) { width: 90%; }
+    @media only screen and (max-width: $narrow-cutoff) { width: 90%; }
   }
 
   p {
     font-family: $font-family-calson;
     font-size: 1.4rem;
     width: 55%;
-    @media only screen and (max-width: 1024px) { width: 90%; }
+    @media only screen and (max-width: $narrow-cutoff) { width: 90%; }
+    code {
+      font-size: 18px
+    }
   }
 
   pre {
     width: 55%;
-    @media only screen and (max-width: 1024px) { width: 90%; }
+    @media only screen and (max-width: $narrow-cutoff) { width: 90%; }
   }
 
   code {

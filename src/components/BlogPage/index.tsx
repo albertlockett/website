@@ -37,7 +37,7 @@ export default function BlogPage(props): ReactElement {
             <TerrySSO1 />
           </Route>
           <Route>
-            <h1>Test</h1>
+            <h1 style={{ marginBottom: '12px' }}>Writing</h1>
             <HomePage />
           </Route>
         </Switch>
