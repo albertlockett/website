@@ -4,6 +4,7 @@ import { useLocation, Link, Switch, Route } from 'react-router-dom'
 
 import Navigation from '../Navigation'
 import HomePage from './components/HomePage'
+import AlbertDbIntro from './albertdb/intro.mdx'
 import IneffJavaHashSet from './innefective-java/set-contains.mdx'
 import SportsBettingIntro from './sports-betting-site/intro.mdx'
 import SportsBettingPart1 from './sports-betting-site/part-1.mdx'
@@ -21,6 +22,9 @@ export default function BlogPage(props): ReactElement {
       <Navigation />
       <div className={classnames('article')}>
         <Switch>
+          <Route path="/articles/albertdb/intro">
+            <AlbertDbIntro />
+          </Route>
           <Route path="/articles/ineffective-java/set-contains">
             <IneffJavaHashSet />
           </Route>

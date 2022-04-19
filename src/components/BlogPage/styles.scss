@@ -76,6 +76,13 @@ $narrow-cutoff: 1280px;
     width: 90%;
   }
 
+  h4 {
+    font-family: ltc-bodoni-175, serif;
+    font-size: 1.4rem;
+    font-weight: 100;
+    width: 90%;
+  }
+
   ul {
     width: 55%;
     @media only screen and (max-width: $narrow-cutoff) { width: 90%; }
@@ -83,7 +90,7 @@ $narrow-cutoff: 1280px;
 
   p {
     font-family: $font-family-calson;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     width: 55%;
     @media only screen and (max-width: $narrow-cutoff) { width: 90%; }
     code {

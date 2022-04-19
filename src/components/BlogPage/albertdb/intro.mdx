@@ -1,0 +1,67 @@
+import Code from '../../Code'
+
+# albertdb
+
+Welcome to albertdb, a key-value database.
+Its design is inspired by other LSM databses like Scylla, Dynamo and RocksDB.
+I wrote this as a a side-project while teaching myself Rust and also to
+  demonstrate some competance in database development.
+
+You might enjoy reading this article if you are interested in learning more
+  about database internals.
+
+[The code for albertdb can be found on my github](https://github.com/albertlockett/albertdb)
+
+There are code snippets used in the article for demonstration purposes.
+
+_This article, like albertdb, is work-in-progress (WIP)_
+
+## Engine
+
+This section will describe the read and write paths of the database.
+
+It will reference many of the data structures that have been used to build
+  this database but not in great detail.
+This section is mostly focused on how the pieces fit together at a high level.
+The individual components will be described in better detail in other sections.
+
+### Write Path
+
+The database receives key-value records to be written consisting of arbitrary
+  arrays of bytes.
+<Code language="rust">
+{`pub fn write(&mut self, key: &[u8], value: &[u8]) {`}
+</Code>
+
+The record is then written to an in-memory balanced tree called a _memtable_ and
+  it is also peristed in an on-disk file called the write ahead log (_WAL_).
+<Code language="rust">
+{`    self.writable_wal.write(key, Some(value)).unwrap();
+    self.writable_table // <-- memtable
+        .insert(key.to_vec(), Some(value.to_vec()));`}
+</Code>
+
+The WAL will be used to recover the memtable in case of a database crash.
+
+#### Memtable Flush
+
+The memtable cannot grow indefinity, otherwise it would use up all the
+  memory on the system.
+When the memtable reaches a certain threshold, it is flushed to an on-disk
+  data structure called an _sstable_.
+
+<Code language="rust">
+{`    if self.writable_table.size() > self.config.memtable_max_count {
+        self.flush_writable_memtable();
+    }`}
+</Code>
+
+Once the memtable begins being flushed, new values are no-longer written to it.
+A new memtable is created and it becomes the writable memtable.
+The flushing memtables remain avaiable in memory for the read path while
+  the flush is in progress.
+
+Once the flush is complete, the sstable becomes available for the read path.
+The flushing memtable is no-longer needed and it is dropped from memory.
+The WAL is also no-longer needed and it is also deleted.
+

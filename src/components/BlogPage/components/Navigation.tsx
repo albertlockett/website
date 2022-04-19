@@ -9,6 +9,9 @@ export default function Navigation(): ReactElement {
         <Link to="/articles/terry-sso/terry-sso1">
           Terry SSO: Understanding OAuth 2.0 PCKE Flow (Hands-on Approach)
         </Link>
+        <br />
+        <br />
+        <Link to="/articles/albertdb/intro">albertdb: A Simple Key-Value LSM Database</Link>
       </div>
     </div>
   )
