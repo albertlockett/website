@@ -83,6 +83,11 @@ $narrow-cutoff: 1280px;
     width: 90%;
   }
 
+  img {
+    max-width: 1024px;
+    width: 80%;
+  }
+
   ul {
     width: 55%;
     @media only screen and (max-width: $narrow-cutoff) { width: 90%; }

@@ -1,4 +1,6 @@
 import Code from '../../Code'
+import PngWritePath1 from './write_path_1.png'
+import PngWriteFlush from './write_flush_fixed.png'
 
 # albertdb
 
@@ -43,6 +45,8 @@ The record is then written to an in-memory balanced tree called a _memtable_ and
 
 The WAL will be used to recover the memtable in case of a database crash.
 
+<img src={PngWritePath1} />
+
 #### Memtable Flush
 
 The memtable cannot grow indefinity, otherwise it would use up all the
@@ -64,4 +68,63 @@ The flushing memtables remain avaiable in memory for the read path while
 Once the flush is complete, the sstable becomes available for the read path.
 The flushing memtable is no-longer needed and it is dropped from memory.
 The WAL is also no-longer needed and it is also deleted.
+
+<img src={PngWriteFlush} />
+
+### Read Path
+
+Reads will check each data structure that could contain the data in order of
+  how recently the data was written.
+This ensures we always read the freshest value.
+
+First, the current writable memtable is checked.
+If the data is not found, each flushing memtable is checked until until the data
+  is found.
+If the value cannot be found in any of the memtables,
+  the sstables will be checked next in order of how recently they were created.
+
+_TODO there's a bug in this algorithm that an older memtable could finish flushing
+after the a newer one?_
+
+_TODO add a picture of the readpath_
+_TODO add a picture of the code going through these checks_
+
+### Deletes
+
+_TODO write about how the tombstones work_
+
+
+## Memtables
+
+Memtables are an in-memory balanced tree that are used to buffer writes before
+  they are flushed to disk as immutable sstables.
+
+There are many kinds of balanced binary trees that could be used for this.
+B-Trees would have been more traditional, and a Red-Black Tree or 2-3 tree could
+  also have worked but albertdb uses a treap with randomization to ensure
+  balancing.
+This implementation was chosen for it's simplicity (a simple data structure was
+  needed as I was just a beginner at rust when I started this).
+
+Treaps are binary trees that are balanced in the left-right direction 
+  (like a binary search tree) using one measure and in the up-down direction 
+  (like a heap) using another. _Tree + Heap = treap_
+In this case, our databases keys are used to balance the tree left to right,
+  and a random number is used to balance the tree in the up-down direction.
+
+Using a random variable ensures that the tree will be balanced on average.
+This can be shown mathemetically that the maximum expected value of the depth of
+  any node in the tree proportional to the logarithm of the number of the number
+  of nodes
+The details are a bit gory but we can also think about it intuitively.
+As more and more nodes are added,
+  if we are randomly choosing at which depth to insert the nodes, 
+  then eventually it becomes less likely we'll keep adding to the top
+  or the bottom.
+I don't intend for this to be a post about randomized treaps.
+An excellent reference to learn more is _Advanced Algorithms and Data Structures_
+  by Marcello La Rocca.
+
+
+
 
