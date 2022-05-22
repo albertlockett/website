@@ -4,19 +4,34 @@ import PngWriteFlush from './write_flush_fixed.png'
 
 # albertdb
 
+_This arcicle is work-in-progress (WIP).
+Some sections will be more fleshed out than others and some sentences/paragraphs
+are placeholders for future work. Please excuse mistakes, omissions and factual
+errors._
+
 Welcome to albertdb, a key-value database.
 Its design is inspired by other LSM databses like Scylla, Dynamo and RocksDB.
+
 I wrote this as a a side-project while teaching myself Rust and also to
   demonstrate some competance in database development.
 
-You might enjoy reading this article if you are interested in learning more
+When I started this project, I had very little experience with Rust but I had
+  just finished reading _Programming Rust_ by Bandy et al. 
+I also had no experience with database development, but I had also recently
+  finished reading _Database Internals_ by Alex Petrov (one of the best books
+  I've ever read).
+I was looking for a project to help solidify the concepts.
+
+To wit, you're reading an article about a database written in rust by someone
+  with no prior practical experience with rust or databse development.
+Grab some popcorn and enjoy!
+
+You might also enjoy reading this article if you are interested in learning more
   about database internals.
 
 [The code for albertdb can be found on my github](https://github.com/albertlockett/albertdb)
 
 There are code snippets used in the article for demonstration purposes.
-
-_This article, like albertdb, is work-in-progress (WIP)_
 
 ## Engine
 
@@ -27,10 +42,21 @@ It will reference many of the data structures that have been used to build
 This section is mostly focused on how the pieces fit together at a high level.
 The individual components will be described in better detail in other sections.
 
+_TODO somewhere could show the code for the engine or at least add more snippets_.
+
 ### Write Path
 
 The database receives key-value records to be written consisting of arbitrary
   arrays of bytes.
+This might seem a bit limiting as other databases allow operations on friendlier
+  primitives such as strings and numeric values,
+  and indeed better use of generics could support this.
+My thinking on using byte arrays was that it keeps the code in the engine a bit 
+  simplier
+Also,  making the application responsible for serializing and deserializing the
+  data is not without precident.
+Many redis clients do the same thing.
+
 <Code language="rust">
 {`pub fn write(&mut self, key: &[u8], value: &[u8]) {`}
 </Code>
@@ -85,14 +111,20 @@ If the value cannot be found in any of the memtables,
 
 _TODO there's a bug in this algorithm that an older memtable could finish flushing
 after the a newer one?_
-
 _TODO add a picture of the readpath_
 _TODO add a picture of the code going through these checks_
 
 ### Deletes
 
-_TODO write about how the tombstones work_
+Given the explanation of the readpath, consider if simply deleting a node from
+  the memtable would delete the value from the database.
+The answer is "no".
+If the value is written into the memtable and then the memtable is flushed,
+  the old value for this key would still be present in the flushed memtable.
+We need to add a record to mark the value as explicitly deleted.
+This is called a tombstone.
 
+_TODO we could put a picture of this_
 
 ## Memtables
 
@@ -110,7 +142,8 @@ Treaps are binary trees that are balanced in the left-right direction
   (like a binary search tree) using one measure and in the up-down direction 
   (like a heap) using another. _Tree + Heap = treap_
 In this case, our databases keys are used to balance the tree left to right,
-  and a random number is used to balance the tree in the up-down direction.
+  and a random number is used to balance the tree in the up-down direction which
+  is called the _priority_.
 
 Using a random variable ensures that the tree will be balanced on average.
 This can be shown mathemetically that the maximum expected value of the depth of
@@ -125,6 +158,95 @@ I don't intend for this to be a post about randomized treaps.
 An excellent reference to learn more is _Advanced Algorithms and Data Structures_
   by Marcello La Rocca.
 
+_TODO if this turns into a long long document, could add some proofs here_
 
+### Implementation
 
+It's interesting to look at how this datastrcture is really built using Rust.
+
+Thanks to Rust's ownership model, these kinds of data structures that
+  constructred from nodes that have pointers to other nodes are notoriously
+  difficult for beginners to build from scratch.
+I had originally intended for this to be an article just about albertdb,
+  but anyone reading this for the purpose of learning more about rust might find
+  this a helpful tangent.
+
+Here's how the node is defined:
+
+<Code language="rust">
+{`pub struct Node {
+    pub key: Vec<u8>,
+    pub value: Option<Vec<u8>>,
+    pub priority: f64,
+    pub left: Link,
+    pub right: Link,
+    pub parent: Link,
+}
+ 
+pub type Link = Option<Arc<RwLock<Node>>>;
+`}
+</Code>
+
+Key and Value are implemented as `Vec<u8>`, an array of bytes as would be expected.
+Value uses the `Option` enum, where the `None` would value would represent a
+  deleted value (a tombstone).
+
+_Reminder: Option in Rust is an enum with two values, `None` and `Some(<T>)`.
+None means there is no value, and Some means there is a value.
+This is simliar to `java.util.Optional<T>` in Java.
+The golang equivalent would be returning a pointer and a nil pointer represents no value_.
+
+For the up-down heap invariant, we use  `priority` which is a random 64bit floating
+  point (a "long" in normal languages).
+
+The fields that represent relationships with other nodes is where things get
+  complicated/interesting!
+For left, right and parent nodes in the tree, we use the `Link` type.
+This type is like an ogre, it has layers that must be unpacked to be understood.
+
+Firstly, if the relationship doesn't exist, the option will be `None`.
+In this case, leaf nodes would have `left: None` and/or `right: None`, and the root
+  node would have `parent: None`.
+
+The next layer is the `Arc` type which is a reference counted pointer that can
+  be passed between threads (rc = reference counted, A = asyncrhonous).
+No two nodes can "own" another node in rusts ownership model, but each can own
+  a clone of the pointer.
+A reference counting pointer is used because multiple references must be
+  created for the same node (i.e, a node's parent will point to it as the 
+  left/right property and the node's child will point to it as the parent).
+Multiple threads will be operating on our memtable at once (i.e. one thread
+  could be flushing the memtable while another is reading from it), so a 
+  pointer that can be passed between threads must be used.
+
+The final layer is the `RwLock`, which is a Read/Write lock that can be shared
+  across threads.
+Usually in Rust, to have write access to a data structure you would borrow the
+  a mutable reference to the node whereas many non-mutable references could be
+  borrowed simultaneously for reading.
+But because our memtable and the nodes within it are shared across many threads,
+  guarantees about how many mutable references exist cannot be made and so rust
+  doesn't let us do it.
+The RwLock is our way around this.
+It has methods to give us one mutable reference to the Node which will wait 
+  if non mutable borrows have been made, and vice-versa.
+
+The structure of the memtable itself is a bit simpler -- it is a refernece to
+  the root node plus some metadata about the table itself such as how many nodes
+  it contains and some unique identfier.
+<Code language="rust">
+{`pub struct Memtable {
+    root: Link,
+    size: u32,
+    pub id: String,
+}`}
+</Code>
+
+_TODO could possibly give some descriptions of insert & delete algorithms_.
+
+## SSTable
+
+The SSTable is the on-disk data structure that stores the data for our db.
+
+_TODO write the rest of this section_
 
