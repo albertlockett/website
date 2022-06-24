@@ -18,13 +18,12 @@ I wrote this as a a side-project while teaching myself Rust and also to
 When I started this project, I had very little experience with Rust but I had
   just finished reading _Programming Rust_ by Bandy et al. 
 I also had no experience with database development, but I had also recently
-  finished reading _Database Internals_ by Alex Petrov (one of the best books
-  I've ever read).
+  finished reading _Database Internals_ by Alex Petrov (a good read).
 I was looking for a project to help solidify the concepts.
 
-To wit, you're reading an article about a database written in rust by someone
+You're reading an article about a database written in rust by someone
   with no prior practical experience with rust or databse development.
-Grab some popcorn and enjoy!
+Enjoy!
 
 You might also enjoy reading this article if you are interested in learning more
   about database internals.
@@ -54,7 +53,7 @@ This might seem a bit limiting as other databases allow operations on friendlier
 My thinking on using byte arrays was that it keeps the code in the engine a bit 
   simplier
 Also,  making the application responsible for serializing and deserializing the
-  data is not without precident.
+  data isn't without precident.
 Many redis clients do the same thing.
 
 <Code language="rust">
@@ -169,7 +168,7 @@ Thanks to Rust's ownership model, these kinds of data structures that
   difficult for beginners to build from scratch.
 I had originally intended for this to be an article just about albertdb,
   but anyone reading this for the purpose of learning more about rust might find
-  this a helpful tangent.
+  this tangent helpful.
 
 Here's how the node is defined:
 
@@ -191,7 +190,7 @@ Key and Value are implemented as `Vec<u8>`, an array of bytes as would be expect
 Value uses the `Option` enum, where the `None` would value would represent a
   deleted value (a tombstone).
 
-_Reminder: Option in Rust is an enum with two values, `None` and `Some(<T>)`.
+_Option in Rust is an enum with two values, `None` and `Some(<T>)`.
 None means there is no value, and Some means there is a value.
 This is simliar to `java.util.Optional<T>` in Java.
 The golang equivalent would be returning a pointer and a nil pointer represents no value_.
@@ -202,14 +201,14 @@ For the up-down heap invariant, we use  `priority` which is a random 64bit float
 The fields that represent relationships with other nodes is where things get
   complicated/interesting!
 For left, right and parent nodes in the tree, we use the `Link` type.
-This type is like an ogre, it has layers that must be unpacked to be understood.
+This type is like an ogre, it has layers that must be unwrapped to be understood.
 
-Firstly, if the relationship doesn't exist, the option will be `None`.
+First, if the relationship doesn't exist, the option will be `None`.
 In this case, leaf nodes would have `left: None` and/or `right: None`, and the root
   node would have `parent: None`.
 
 The next layer is the `Arc` type which is a reference counted pointer that can
-  be passed between threads (rc = reference counted, A = asyncrhonous).
+  be passed between threads (rc = reference counted, A = atomic).
 No two nodes can "own" another node in rusts ownership model, but each can own
   a clone of the pointer.
 A reference counting pointer is used because multiple references must be
@@ -230,6 +229,10 @@ But because our memtable and the nodes within it are shared across many threads,
 The RwLock is our way around this.
 It has methods to give us one mutable reference to the Node which will wait 
   if non mutable borrows have been made, and vice-versa.
+
+An excellent primer on all these data structures will be available in 
+_Rust Atomics and Locks_ by Mara Bos which is currently in the pre-release
+  state on [o'relley.com](https://learning.oreilly.com/library/view/rust-atomics-and/9781098119430/ch01.html)
 
 The structure of the memtable itself is a bit simpler -- it is a refernece to
   the root node plus some metadata about the table itself such as how many nodes
