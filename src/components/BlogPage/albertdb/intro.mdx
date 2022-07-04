@@ -249,7 +249,181 @@ _TODO could possibly give some descriptions of insert & delete algorithms_.
 
 ## SSTable
 
-The SSTable is the on-disk data structure that stores the data for our db.
+The sstable is the on-disk data structure that stores the data for our db.
+The "SS" in sstable stands for "Sorted String", which means that the values
+  in the sstable are stored in an order that is sorted by the key.
+When we flush the sstable to disk, we can build it from the memtable by
+  traversing it using a standard DFS traversal.
 
-_TODO write the rest of this section_
+Each sstable is made up of two files, the metadata file and the data file.
+The memtable ID becomes the sstable ID and is postfixed to the file name.
+```
+$ ls /tmp
+sstable-data-2037628040
+sstable-meta-2037628040
+```
+
+### Data File
+
+SStables are organized into blocks, and each block contains multiple key/value pairs.
+Within a block, keys and values are stored in sorted order, and each block is sorted
+by the minimum key.
+
+This is how the data would be laid out within a block:
+```
+[
+  flags(1byte)|
+  key_length(4 bytes)|
+  key1(byte[])|
+  value_length(4 bytes)|
+  value1(byte)
+]
+[flags|key_length|key2|value_length|value2]
+[flags|key_length|key3|value_length|value3]
+...
+```
+
+_TODO this might change with https://github.com/albertlockett/albertdb/issues/10_
+
+Each block will be is compressed and that is what is stored in the sstable
+```
+[compress(block1)]
+[compress(block2)]
+...
+```
+
+### Metadata File
+
+The metadata file is yaml and is formatted like follows:
+
+<Code language="yaml">
+{`
+ # blocks contains metadata about each block in the data file
+ blocks:
+    # count is the number of key value pairs in the
+  - count: 2
+    # size is the size of the block uncompressed
+    size: 126
+    # size_compressed is the size of the compressed block in the file
+    size_compressed: 50
+ 
+    # start key is the array of bytes in the first key in the block
+    # for example "a3" = [0x61, 0x33] = [97, 51]
+    start_key:
+      - 97
+      - 51
+     # start offset is the offset in the data file of the block.
+    start_offset: 0
+  
+  # next block ...
+  - count: 2
+    size: 39
+    size_compressed: 64
+    start_key:
+      - 97
+      - 97
+      - 115
+      - 100
+      - 102
+    start_offset: 50
+  # this is the time the sstable was written
+  timestamp: 1656967171168
+  # this is the level of the sstable (used in leveled compaction strategy)
+  level: 0
+  
+  # ... bloom_filters follows
+`}
+</Code>
+
+On the read path, we are able to do binary search on the key to determine 
+  which block may contain a given key.
+Once the block is known, we can allocate a buffer of known size by knowing
+  the uncompressed block size.
+The block can be uncompressed into the buffer and then the data is iterated
+  to find the key/value pair if it exists.
+
+### Bloom Filter
+
+Knowing which block contains the data is great but it is impossible to know
+  if the key is in the block unless it is decrompessed and iterated.
+By way of optimization, we have bloom filters that can be used to determine 
+  with certainty that a given table does not contain the key.
+That way the sstable can be skipped entirely on the readpath.
+
+A bloom filter is a datastructure that is a sequence of bits.
+To check if some key is in the bloom filter, we hash the key and then use that
+  hash to indentify a bit in the array.
+If the bit is one, the table may contain the key (or it may contain a 
+  different key with the same hash)
+
+Example - in the simple example below we know "a" is not in the table because 
+  `bloom_filter[2]` is `0`. 
+```
+key = "a"
+hash(key) = 2
+bloom_filter = [0,1,0,0,1,0]
+```
+
+In the `albertdb` implementation, the bit array is implemented as a series of
+  128 bit integers called segments.
+e.g, a bloom filter with 1024 bits would have 8 segments.
+
+Typically more than one hash will be computed and each to check if the table
+  may contain the key, the filter must have a `1` in the position for each hash.
+To create multiple hashed values, double/triple hasing is used.
+e.g. each subsequent hash is a combination of two hashes of the previous hash
+  plus some offset.
+This is a simple way to avoid has collisions.
+A good reference for further information about bloom filter implementation is
+  _Advaned Data Structures and Algorithms_ by Marcello la Rocca.
+
+<Code language="rust">
+{`
+let mut indices = vec![0; self.num_hashes as usize];
+for i in 0..self.num_hashes {
+    let hash_murmur3 = fasthash::murmur3::hash32_with_seed(key, self.seed) as u64;
+    let hash_city = fasthash::city::hash32_with_seed(key, self.seed) as u64;
+    let hash_num = i as u64;
+  
+    // double hash to avoid collisions
+    let hash = hash_murmur3 + hash_num * hash_city + hash_num * hash_num;
+    indices[i as usize] = (hash % self.size as u64) as usize;
+}
+`}
+</Code>
+
+The bloom filter section of the sstable meta file looks like the following:
+
+<Code language="yaml">
+{`bloom_filter:
+  # this is how many hashes are computed for each key
+  num_hashes: 3
+  # this is the size of the bit array in the boom filter
+  size: 2048
+  # this is the randomly chosen seed for our hash functions
+  seed: 2142
+  # these are the 128 bit integers which are used as bit arrays
+  segments:
+    - 0
+    - 0
+    - 4294967300
+    - 140737488355328
+    - 16777216
+    - 0
+    - 262144
+    - 0
+    - 0
+    - 1024
+    - 162259276829213363391578010288128
+    - 166153499473114484112975882669260800
+    - 16
+    - 4951760157141521099596496896
+    - 0
+    - 1298074214633706907132624082305024
+`}
+</Code>
+
+
+
+
 
