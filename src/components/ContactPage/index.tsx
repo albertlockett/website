@@ -10,7 +10,7 @@ export default function ContactPage(): ReactElement {
       <Navigation />
       <div className="content">
         <div className="title">Contact</div>
-        <div className="location">Montreal, QC</div>
+        <div className="location">Québec, QC</div>
         <div className="links">
           {/* email */}
           <div className={classnames('link', 'underline-fadein')}>

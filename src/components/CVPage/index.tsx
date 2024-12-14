@@ -5,11 +5,28 @@ import { Download } from 'react-feather'
 import Navigation from '../Navigation'
 import Experience, { ExperienceProps } from './Experience'
 import Skill from './Skill'
-import { CompositSketch, CompositSketchSmile, LogoAliant, LogoAmbir, LogoEY, LogoSonrai } from '../StaticImages'
+import {
+  CompositSketch,
+  CompositSketchSmile,
+  LogoAliant,
+  LogoAmbir,
+  LogoEY,
+  LogoLancedb,
+  LogoSonrai,
+  LogoSolo,
+} from '../StaticImages'
 
 import './styles.scss'
 
 const skills = [
+  {
+    category: 'Rust',
+    details: ['Arrow', 'Datafusion', 'actix', 'tokio'],
+  },
+  {
+    category: 'go',
+    details: ['grpc', 'gorm'],
+  },
   {
     category: 'JavaScript',
     details: ['react', 'redux', 'webpack', 'jest', 'enzyme', 'graphql', 'node', 'express'],
@@ -19,26 +36,62 @@ const skills = [
     details: ['spring framework', 'graphql', 'jsp', 'junit', 'hibernate'],
   },
   {
-    category: 'go',
-    details: ['grpc', 'grom'],
-  },
-  {
     category: 'database',
     details: ['oracle', 'mysql', 'postgres', 'elasticsearch', 'redis', 'janusgraph'],
   },
   {
     category: 'other',
-    details: ['docker', 'kubernetes', 'aws'],
+    details: ['docker', 'kubernetes', 'aws', 'open-telemetry'],
   },
 ]
 
 const experiences: ExperienceProps[] = [
+  {
+    company: 'LanceDB',
+    title: 'Senior Software Engineer',
+    startDate: {
+      month: 'October',
+      year: 2023,
+    },
+    responsibilities: [
+      "Significant contributor to LanceDB's Enterprise / Cloud SaaS offerings",
+      'Enhancing and optimizing REST APIs and backend services written in Rust',
+      'Added low-level encodings for LanceV2 format',
+      'Maintained LanceDB Node.js and Python clients',
+      'Enhanced observability system using open-telemetry.',
+      'Developed Helm charts and Terraform for streamlined deployment and infrastructure management across diverse cloud environments and storage solutions',
+    ],
+    picture: LogoLancedb,
+  },
+  {
+    company: 'Solo.io',
+    title: 'Senior Software Engineer',
+    startDate: {
+      month: 'November',
+      year: 2022,
+    },
+    endDate: {
+      month: 'October',
+      year: 2023,
+    },
+    responsibilities: [
+      'Designed and implemented build pipelines for custom patches of cilium',
+      'Contributed to eBPF based solutions for TCP metrics and poc srv6 routing',
+      'enhanced Istio gateway capabilities including WAF, DLP, Active Health Checking and regex path rewrite',
+      'Added helm chart documentation to open-source solo-kit v2 chart generation library',
+    ],
+    picture: LogoSolo,
+  },
   {
     company: 'Sonrai Security',
     title: 'Senior Software Engineer',
     startDate: {
       month: 'January',
       year: 2018,
+    },
+    endDate: {
+      month: 'November',
+      year: 2022,
     },
     responsibilities: [
       'Worked on Frontend UX design and implementation using JavaScript, React, Redux, HTML, CSS',
@@ -114,7 +167,7 @@ export default function CVPage(): ReactElement {
         <div className="title">
           Albert Lockett
           <span className="download-icon">
-            <a href="/albert-lockett-cv-may-2021.pdf" target="_blank">
+            <a href="/albert-lockett-cv-current.pdf" target="_blank">
               <Download />
             </a>
           </span>
