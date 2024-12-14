@@ -12,7 +12,7 @@ export default function HomePage(): ReactElement {
       <Navigation />
       <div className="body">
         <div className="title">Albert Lockett</div>
-        <div className="message">"Professional Software engineer"</div>
+        <div className="message">hello, world</div>
       </div>
       <div className="home-img" scale="0.5">
         <img src={homeImg} />
