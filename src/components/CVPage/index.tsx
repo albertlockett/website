@@ -14,6 +14,7 @@ import {
   LogoLancedb,
   LogoSonrai,
   LogoSolo,
+  LogoF5,
 } from '../StaticImages'
 
 import './styles.scss'
@@ -47,11 +48,25 @@ const skills = [
 
 const experiences: ExperienceProps[] = [
   {
+    company: 'F5',
+    title: 'Principal Engineer',
+    startDate: {
+      month: 'May',
+      year: 2025,
+    },
+    responsibilities: ['Working on OTel Arrow'],
+    picture: LogoF5,
+  },
+  {
     company: 'LanceDB',
     title: 'Senior Software Engineer',
     startDate: {
       month: 'October',
       year: 2023,
+    },
+    endDate: {
+      month: 'April',
+      year: 2025,
     },
     responsibilities: [
       "Significant contributor to LanceDB's Enterprise / Cloud SaaS offerings",

@@ -3,6 +3,7 @@ export { default as CompositSketchSmile } from '../../../static/images/composite
 export { default as LogoAliant } from '../../../static/images/aliant_logo_drawn.png'
 export { default as LogoAmbir } from '../../../static/images/ambir_logo_drawn.png'
 export { default as LogoEY } from '../../../static/images/ey_logo_drawn.png'
+export { default as LogoF5 } from '../../../static/images/f5_logo_drawn.png'
 export { default as LogoLancedb } from '../../../static/images/lancedb_logo_drawn.png'
 export { default as LogoSonrai } from '../../../static/images/sonrai-logo-drawn.png'
 export { default as LogoSolo } from '../../../static/images/solo_logo_drawn.png'
